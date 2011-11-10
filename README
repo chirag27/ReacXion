@@ -1,0 +1,18 @@
+These are all the materials for the ReacXion Project (Work in progress).
+ReacXion was Developed by Jeremy E. Blum <www.jeremyblum.com>
+More info on ReacXion is available at http://jeremyblum.com/tag/reacxion/
+
+ReacXion is Open Source Hardware and Software Licensed via a Creative Commons Attribution Share-Alike License
+http://creativecommons.org/licenses/by-nc-sa/3.0/us/
+
+Circuit Schematics:
+I have not yet completed CAD versions of the schematics.  Please watch the videos linked above for more information about the system wiring.
+
+Datasheets:
+These are the Datasheets for all the parts I'm using.
+
+html config:
+This is a PHP-powered web interface I designed to more-easily generate the code for driving the LEDs.  Simply check some boxes, and the code is generated automagically!
+
+Test Code:
+The highest-numbered code folder is generally the most complex one.  They each serve different test functions.
