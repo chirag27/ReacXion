@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "system": "Lal Kitab",
+    "description": "Core reference tables for the Lal Kitab system: permanent houses (pakka ghar), planetary friendships/enemies as used in Lal Kitab, significations, and the rules that decide whether a planet is benefic or malefic in a chart. Variants exist across Lal Kitab editions (1939/1941/1942/1952); values here follow the most commonly cited tradition.",
+    "disclaimer": "Lal Kitab remedies are traditional and cultural. They are not a substitute for medical, legal, financial or psychological advice. Surface this disclaimer with every remedy shown to a user."
+  },
+
+  "planets": ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"],
+
+  "pakka_ghar": {
+    "_note": "Permanent / fixed house of each planet. A planet in its pakka ghar is strong and well-placed; the lord of a pakka ghar acts as a substitute when the planet sits elsewhere.",
+    "Sun": 1,
+    "Moon": 4,
+    "Mars": 8,
+    "Mercury": 7,
+    "Jupiter": 9,
+    "Venus": 7,
+    "Saturn": 10,
+    "Rahu": 12,
+    "Ketu": 6
+  },
+
+  "significations": {
+    "Sun": ["father", "soul", "government", "authority", "bones", "eyes", "self-respect"],
+    "Moon": ["mother", "mind", "emotions", "water", "milk", "public", "heart"],
+    "Mars": ["brothers", "courage", "land/property", "blood", "energy", "litigation"],
+    "Mercury": ["speech", "business", "intellect", "sister/daughter", "skin", "maternal relatives"],
+    "Jupiter": ["wealth", "wisdom", "guru/teacher", "children", "religion", "liver", "gold"],
+    "Venus": ["spouse", "marriage", "luxury", "vehicles", "beauty", "semen/reproduction", "comforts"],
+    "Saturn": ["karma", "discipline", "labour", "servants", "iron", "old age", "delays", "justice"],
+    "Rahu": ["confusion", "foreign", "maternal grandfather", "sudden events", "addictions", "electronics"],
+    "Ketu": ["son/progeny", "spirituality", "dog", "paternal grandfather", "detachment", "sudden loss"]
+  },
+
+  "friendship": {
+    "_note": "Lal Kitab broadly follows natural (naisargik) friendships. F=friend, E=enemy, N=neutral.",
+    "Sun":     {"friends": ["Moon", "Mars", "Jupiter"], "enemies": ["Venus", "Saturn", "Rahu"], "neutral": ["Mercury", "Ketu"]},
+    "Moon":    {"friends": ["Sun", "Mercury"], "enemies": ["Rahu", "Ketu"], "neutral": ["Mars", "Jupiter", "Venus", "Saturn"]},
+    "Mars":    {"friends": ["Sun", "Moon", "Jupiter"], "enemies": ["Mercury"], "neutral": ["Venus", "Saturn", "Rahu", "Ketu"]},
+    "Mercury": {"friends": ["Sun", "Venus", "Rahu"], "enemies": ["Moon"], "neutral": ["Mars", "Jupiter", "Saturn", "Ketu"]},
+    "Jupiter": {"friends": ["Sun", "Moon", "Mars", "Ketu"], "enemies": ["Mercury", "Venus"], "neutral": ["Saturn", "Rahu"]},
+    "Venus":   {"friends": ["Mercury", "Saturn", "Rahu"], "enemies": ["Sun", "Moon"], "neutral": ["Mars", "Jupiter", "Ketu"]},
+    "Saturn":  {"friends": ["Mercury", "Venus", "Rahu"], "enemies": ["Sun", "Moon", "Mars"], "neutral": ["Jupiter", "Ketu"]},
+    "Rahu":    {"friends": ["Mercury", "Venus", "Saturn"], "enemies": ["Sun", "Moon", "Mars"], "neutral": ["Jupiter", "Ketu"]},
+    "Ketu":    {"friends": ["Mars", "Venus", "Saturn"], "enemies": ["Sun", "Moon"], "neutral": ["Mercury", "Jupiter", "Rahu"]}
+  },
+
+  "planet_states": {
+    "_note": "Lal Kitab classifies a planet's condition. These drive whether a remedy is needed.",
+    "sleeping": "Planet that gives no result until 'awakened'; often when alone with no aspect/conjunction.",
+    "awakened": "Active planet giving full results (good or bad).",
+    "blind": "Planet that misfires its results onto the wrong house/person.",
+    "benefic": "Planet placed in a friendly house or with friends; gives supportive results.",
+    "malefic": "Planet in an enemy house or with enemies; the case where remedies are prescribed."
+  },
+
+  "malefic_conditions": {
+    "_note": "Heuristics this engine uses to flag a planet as malefic (needing a remedy). Any one may apply.",
+    "rules": [
+      "Planet sits in the house of an enemy planet's pakka ghar.",
+      "Planet is conjunct an enemy planet.",
+      "Rahu/Ketu in 1, 4, 5, 7, 8, 9 or 12 (commonly considered troublesome).",
+      "Sun + Saturn together, Sun + Rahu (grahan), or Moon + Rahu/Ketu (grahan).",
+      "Planet debilitated or in the 8th/12th with no friendly support.",
+      "A 'blind' or 'sleeping' planet relevant to the user's stated problem."
+    ]
+  }
+}

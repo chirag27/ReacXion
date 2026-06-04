@@ -1,0 +1,158 @@
+{
+  "_meta": {
+    "system": "Lal Kitab",
+    "title": "Lal Kitab Remedies (Upay / Totke)",
+    "description": "Traditional Lal Kitab remedies organised by planet. Each planet has a set of GENERAL remedies (used when the planet is malefic anywhere) and a few HOUSE-SPECIFIC remedies. Remedies are deliberately simple, low-cost and symbolic — the hallmark of Lal Kitab.",
+    "remedy_fields": {
+      "id": "stable identifier",
+      "type": "donation | ritual | conduct | object | mantra | feeding",
+      "instruction": "what to do",
+      "timing": "when / how often",
+      "addresses": "the affliction this targets",
+      "caution": "safety / disclaimer flags where relevant"
+    },
+    "global_rules": [
+      "Do remedies for ONLY one or two afflicted planets at a time; avoid mixing many remedies together.",
+      "Most Lal Kitab remedies are done for 43 days continuously, or on the planet's weekday.",
+      "Never throw remedy articles in dirty places; flowing water (river) or clean earth is preferred.",
+      "Conduct-based remedies (respecting parents/elders, honesty) are considered the most powerful.",
+      "A remedy must never harm another person or animal; if it does, it is being done wrong."
+    ],
+    "disclaimer": "These are cultural/traditional practices, NOT medical, legal, financial or psychological advice. Anyone with a real-world problem (health, money, legal, relationship) should consult a qualified professional. Always show this disclaimer with remedies. Do not advise fasting, gemstones or dietary changes to anyone for whom these may be unsafe."
+  },
+
+  "weekdays": {
+    "Sun": "Sunday", "Moon": "Monday", "Mars": "Tuesday", "Mercury": "Wednesday",
+    "Jupiter": "Thursday", "Venus": "Friday", "Saturn": "Saturday",
+    "Rahu": "Saturday/Wednesday", "Ketu": "Tuesday/Thursday"
+  },
+
+  "remedies": {
+    "Sun": {
+      "general": [
+        {"id": "sun-arghya", "type": "ritual", "instruction": "Offer water (arghya) to the rising Sun from a copper vessel, optionally with a pinch of red sandalwood or roli.", "timing": "Daily at sunrise", "addresses": "weak/malefic Sun, low confidence, father's health, government work"},
+        {"id": "sun-wheat-jaggery", "type": "donation", "instruction": "Donate wheat and jaggery (gur), or offer them to the needy.", "timing": "Sundays", "addresses": "self-respect, authority, bone/eye vitality"},
+        {"id": "sun-respect-father", "type": "conduct", "instruction": "Serve and respect your father and father-figures; never disrespect elders.", "timing": "Always", "addresses": "the root of most Sun afflictions"},
+        {"id": "sun-no-alcohol", "type": "conduct", "instruction": "Avoid alcohol and keep conduct dignified.", "timing": "Always", "addresses": "Sun's purity and eyesight"},
+        {"id": "sun-copper-river", "type": "object", "instruction": "Flow a small copper coin/piece in running water.", "timing": "Once, on a Sunday", "addresses": "obstacles in status/career"}
+      ],
+      "by_house": {
+        "7": [{"id": "sun-7-jaggery-feed", "type": "feeding", "instruction": "Give jaggery to monkeys or sweet items to the needy before starting partnerships.", "timing": "Before key partnership/marriage decisions", "addresses": "ego clashes in marriage/business"}],
+        "12": [{"id": "sun-12-temple-light", "type": "ritual", "instruction": "Keep a clean source of light; offer water to Sun and serve at a temple.", "timing": "Daily", "addresses": "drain of energy, eye trouble, sleep"}]
+      }
+    },
+
+    "Moon": {
+      "general": [
+        {"id": "moon-milk-river", "type": "ritual", "instruction": "Offer raw milk (or milk with water) to flowing water, or to the roots of a tree.", "timing": "Monday / Mondays", "addresses": "unstable mind, mother's health, emotional distress"},
+        {"id": "moon-silver", "type": "object", "instruction": "Keep a piece of silver, or wear a silver ring; drink water/milk from a silver vessel.", "timing": "Ongoing", "addresses": "mental peace, emotional grounding"},
+        {"id": "moon-serve-mother", "type": "conduct", "instruction": "Serve and respect your mother and elderly women; seek their blessings.", "timing": "Always", "addresses": "the root of most Moon afflictions"},
+        {"id": "moon-donate-rice", "type": "donation", "instruction": "Donate rice, milk or white cloth to the needy.", "timing": "Mondays", "addresses": "emotional and financial stability"},
+        {"id": "moon-water-discipline", "type": "conduct", "instruction": "Avoid taking milk as a gift from others; keep a water source/pot clean at home.", "timing": "Ongoing", "addresses": "Moon's flow of fortune"}
+      ],
+      "by_house": {
+        "6": [{"id": "moon-6-water-pot", "type": "ritual", "instruction": "Bury a pot of milk/raw rice near a deserted place, or flow it in water, to absorb stress.", "timing": "Once", "addresses": "anxiety, chest/water ailments, debt-worry"}],
+        "8": [{"id": "moon-8-silver-pillow", "type": "object", "instruction": "Keep silver near you and a vessel of clean water by the bedside.", "timing": "Nightly", "addresses": "fear, mental anxiety, mother's health"}]
+      }
+    },
+
+    "Mars": {
+      "general": [
+        {"id": "mars-sweet-river", "type": "ritual", "instruction": "Flow sweet items (batasha/revadi/sugar) or honey in running water.", "timing": "Tuesdays", "addresses": "Mars-negative anger, accidents, disputes"},
+        {"id": "mars-feed-sweets", "type": "feeding", "instruction": "Distribute sweets (especially to children) or jaggery.", "timing": "Tuesdays", "addresses": "courage and harmony with siblings"},
+        {"id": "mars-help-brother", "type": "conduct", "instruction": "Maintain good relations with brothers; never harm siblings or be cruel.", "timing": "Always", "addresses": "Mars's significations directly"},
+        {"id": "mars-donate-masoor", "type": "donation", "instruction": "Donate masoor dal (red lentils) or red items.", "timing": "Tuesdays", "addresses": "blood/energy, property disputes"},
+        {"id": "mars-tandoor-roti", "type": "feeding", "instruction": "Feed the first roti made on the tandoor/stove to a cow or dog.", "timing": "Daily", "addresses": "Mars-positive vitality, removing obstacles"}
+      ],
+      "by_house": {
+        "4": [{"id": "mars-4-sweet-home", "type": "ritual", "instruction": "Keep sweets at home and distribute; avoid heated arguments in the house.", "timing": "Ongoing", "addresses": "domestic peace, mother's health, property"}],
+        "7": [{"id": "mars-7-sweet-river", "type": "ritual", "instruction": "Offer sweets in running water and keep patience in marriage (Manglik remedy).", "timing": "Before/around marriage", "addresses": "marital friction (Mangal dosha)"}]
+      }
+    },
+
+    "Mercury": {
+      "general": [
+        {"id": "merc-green-fodder", "type": "feeding", "instruction": "Feed green fodder/grass to cows, or spinach/green vegetables to the needy.", "timing": "Wednesdays", "addresses": "weak Mercury, business losses, nerves"},
+        {"id": "merc-donate-green", "type": "donation", "instruction": "Donate green items — green cloth, green moong dal, or green bangles.", "timing": "Wednesdays", "addresses": "speech, intellect, skin"},
+        {"id": "merc-pierce-nose", "type": "conduct", "instruction": "(Traditional, for women) keep the nose pierced; for all, keep a copper coin/green item with you.", "timing": "Ongoing", "addresses": "stability of Mercury's results"},
+        {"id": "merc-help-sister", "type": "conduct", "instruction": "Maintain good relations with sisters, daughters and aunts; respect them.", "timing": "Always", "addresses": "Mercury's significations directly"},
+        {"id": "merc-donate-eunuch", "type": "donation", "instruction": "Give green bangles or sweets to transgender persons (a classic Mercury remedy).", "timing": "Wednesdays", "addresses": "clarity of mind, business luck"}
+      ],
+      "by_house": {
+        "8": [{"id": "merc-8-green-river", "type": "ritual", "instruction": "Flow green moong in running water; avoid signing risky contracts in haste.", "timing": "Wednesdays", "addresses": "nervous anxiety, contract/in-law troubles"}],
+        "12": [{"id": "merc-12-feed-birds", "type": "feeding", "instruction": "Feed green grains to birds; keep thoughts clear before decisions.", "timing": "Daily", "addresses": "confused thinking, business losses"}]
+      }
+    },
+
+    "Jupiter": {
+      "general": [
+        {"id": "jup-saffron-tilak", "type": "ritual", "instruction": "Apply a saffron (kesar) tilak on the forehead and/or navel.", "timing": "Daily, esp. Thursdays", "addresses": "weak Jupiter, wisdom, fortune, respect"},
+        {"id": "jup-donate-turmeric", "type": "donation", "instruction": "Donate turmeric, gram dal (chana dal), yellow cloth or yellow sweets.", "timing": "Thursdays", "addresses": "wealth, knowledge, children"},
+        {"id": "jup-water-peepal", "type": "ritual", "instruction": "Offer water to a Peepal tree; serve/water it regularly.", "timing": "Thursdays", "addresses": "fortune, dharma, liver health"},
+        {"id": "jup-respect-guru", "type": "conduct", "instruction": "Respect teachers, gurus, elders and priests; never insult knowledge.", "timing": "Always", "addresses": "the root of most Jupiter afflictions"},
+        {"id": "jup-feed-cow-chana", "type": "feeding", "instruction": "Feed gram (chana) or jaggery to cows, or bananas to the needy.", "timing": "Thursdays", "addresses": "growth of wealth and wisdom"}
+      ],
+      "by_house": {
+        "6": [{"id": "jup-6-temple-donate", "type": "donation", "instruction": "Donate to a temple/learning place; avoid lending money you cannot lose.", "timing": "Thursdays", "addresses": "good intentions exploited, debt, disease"}]
+      }
+    },
+
+    "Venus": {
+      "general": [
+        {"id": "ven-donate-white", "type": "donation", "instruction": "Donate white items — white cloth, rice, sugar, curd or white flowers.", "timing": "Fridays", "addresses": "weak/malefic Venus, marriage, comforts"},
+        {"id": "ven-serve-cow", "type": "feeding", "instruction": "Serve and feed cows; offer them green fodder or jaggery.", "timing": "Daily/Fridays", "addresses": "Venus strength, prosperity, harmony"},
+        {"id": "ven-silver", "type": "object", "instruction": "Keep silver, or wear silver; offer perfume/scent at a clean place.", "timing": "Ongoing", "addresses": "luxury, beauty, relationships"},
+        {"id": "ven-respect-spouse", "type": "conduct", "instruction": "Respect your spouse and women in general; maintain conduct and cleanliness.", "timing": "Always", "addresses": "the root of most Venus afflictions"},
+        {"id": "ven-donate-women", "type": "donation", "instruction": "Give sweets, scent or white items to women/girls.", "timing": "Fridays", "addresses": "marriage and reproductive matters"}
+      ],
+      "by_house": {
+        "6": [{"id": "ven-6-curd-donate", "type": "donation", "instruction": "Donate curd/white sweets; practise moderation in pleasures.", "timing": "Fridays", "addresses": "indulgence-driven debt and ailments"}],
+        "8": [{"id": "ven-8-silver-honesty", "type": "conduct", "instruction": "Keep silver, stay honest in relationships; avoid secret affairs.", "timing": "Ongoing", "addresses": "hidden affairs, reproductive issues, expenses"}]
+      }
+    },
+
+    "Saturn": {
+      "general": [
+        {"id": "sat-feed-dog", "type": "feeding", "instruction": "Feed dogs — give them mustard-oil-smeared bread/roti.", "timing": "Saturdays / daily", "addresses": "malefic Saturn, delays, hardship, Sade Sati"},
+        {"id": "sat-donate-mustard-oil", "type": "donation", "instruction": "Donate mustard oil; look at your reflection in the oil first, then give it away.", "timing": "Saturdays", "addresses": "removing Saturn's heaviness"},
+        {"id": "sat-serve-labour", "type": "conduct", "instruction": "Respect and help labourers, the poor, the elderly and servants; never exploit them.", "timing": "Always", "addresses": "the root of most Saturn afflictions"},
+        {"id": "sat-donate-black", "type": "donation", "instruction": "Donate black items — black sesame (til), black cloth, iron or urad dal.", "timing": "Saturdays", "addresses": "career delays, chronic issues, justice"},
+        {"id": "sat-coins-river", "type": "ritual", "instruction": "Flow black sesame or a few coins in running water.", "timing": "Saturdays", "addresses": "obstacles and accumulated bad karma"},
+        {"id": "sat-feed-crows", "type": "feeding", "instruction": "Feed crows and serve the needy without expecting return.", "timing": "Saturdays", "addresses": "ancestral karma and Saturn's grace"}
+      ],
+      "by_house": {
+        "1": [{"id": "sat-1-patience", "type": "conduct", "instruction": "Embrace patience and honest hard work; feed dogs and the poor.", "timing": "Ongoing", "addresses": "early hardship and delays"}],
+        "5": [{"id": "sat-5-serve-children", "type": "conduct", "instruction": "Serve/educate poor children; donate to a school.", "timing": "Saturdays", "addresses": "delays with children and education"}]
+      }
+    },
+
+    "Rahu": {
+      "general": [
+        {"id": "rahu-barley-river", "type": "ritual", "instruction": "Flow barley (jau) or coal in running water.", "timing": "Saturdays/Wednesdays", "addresses": "malefic Rahu, confusion, sudden troubles"},
+        {"id": "rahu-silver", "type": "object", "instruction": "Keep/wear silver; keep a solid silver ball or piece with you.", "timing": "Ongoing", "addresses": "grounding, clear thinking"},
+        {"id": "rahu-coconut-river", "type": "ritual", "instruction": "Flow a coconut in running water (a classic Rahu remedy).", "timing": "As needed", "addresses": "sudden obstacles and confusion"},
+        {"id": "rahu-donate-mustard", "type": "donation", "instruction": "Donate mustard (sarson), radish, or a blue/black blanket to the needy.", "timing": "Saturdays", "addresses": "addictions, instability, deceit"},
+        {"id": "rahu-respect-elders", "type": "conduct", "instruction": "Respect maternal grandparents and elders; avoid intoxicants and shortcuts.", "timing": "Always", "addresses": "the root of Rahu afflictions"},
+        {"id": "rahu-feed-radish", "type": "feeding", "instruction": "Keep a radish by the bedside at night and donate it next morning.", "timing": "Nightly as needed", "addresses": "Rahu-driven anxiety and bad dreams"}
+      ],
+      "by_house": {
+        "7": [{"id": "rahu-7-silver-honesty", "type": "conduct", "instruction": "Keep silver, stay transparent in partnerships, avoid deceit.", "timing": "Ongoing", "addresses": "confusion/separation in marriage"}],
+        "1": [{"id": "rahu-1-barley", "type": "ritual", "instruction": "Flow barley in water; keep a clear daily routine.", "timing": "Weekly", "addresses": "confused identity, headaches, impulsiveness"}]
+      }
+    },
+
+    "Ketu": {
+      "general": [
+        {"id": "ketu-keep-dog", "type": "conduct", "instruction": "Keep or care for a dog; feed stray dogs regularly.", "timing": "Ongoing", "addresses": "malefic Ketu, progeny, detachment"},
+        {"id": "ketu-donate-blanket", "type": "donation", "instruction": "Donate a black-and-white (or multi-coloured) blanket, or sesame, to the needy.", "timing": "Tuesdays/Thursdays", "addresses": "instability, sudden loss"},
+        {"id": "ketu-silver", "type": "object", "instruction": "Keep silver; keep saffron (kesar) at home.", "timing": "Ongoing", "addresses": "grounding for a scattered Ketu"},
+        {"id": "ketu-respect-elders", "type": "conduct", "instruction": "Respect paternal grandparents and holy/spiritual persons; feed Brahmins/the needy.", "timing": "Always", "addresses": "the root of Ketu afflictions"},
+        {"id": "ketu-feed-dog-children", "type": "feeding", "instruction": "Feed dogs and donate to/for children (especially for progeny concerns).", "timing": "As needed", "addresses": "children/progeny and protection"}
+      ],
+      "by_house": {
+        "5": [{"id": "ketu-5-children", "type": "conduct", "instruction": "Feed dogs, serve children, donate to a temple for progeny blessings.", "timing": "Ongoing", "addresses": "anxiety about children/education"}],
+        "7": [{"id": "ketu-7-keep-dog", "type": "conduct", "instruction": "Keep a dog at home and maintain understanding in marriage.", "timing": "Ongoing", "addresses": "detachment/misunderstanding in marriage"}]
+      }
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "_meta": {
+    "system": "Lal Kitab",
+    "description": "Lal Kitab reading for each planet in each of the 12 houses. Each entry gives a concise effect and a polarity hint (benefic/mixed/malefic) used to decide whether a remedy is offered. Text is a curated distillation of common Lal Kitab tradition and should be reviewed/edited to taste.",
+    "polarity_values": ["benefic", "mixed", "malefic"]
+  },
+
+  "Sun": {
+    "1":  {"polarity": "benefic", "effect": "Strong self-respect and authority; good for government/leadership. Hot temper; watch the eyes and the father's health."},
+    "2":  {"polarity": "mixed",   "effect": "Ups and downs in family wealth; harsh speech can spoil relations. Anger management helps prosperity."},
+    "3":  {"polarity": "benefic", "effect": "Brave and enterprising; gains through siblings and self-effort. Generally supportive."},
+    "4":  {"polarity": "mixed",   "effect": "Disturbance to peace of mind and mother; property matters need care. Avoid arrogance at home."},
+    "5":  {"polarity": "benefic", "effect": "Good for children, status and reputation; royal favour. Pride must be kept in check."},
+    "6":  {"polarity": "benefic", "effect": "Victory over enemies and disease; strong against opposition. Maternal-uncle's side may suffer."},
+    "7":  {"polarity": "malefic", "effect": "Ego clashes in marriage and partnerships; business friction. The classic 'Sun spoils the 7th' placement."},
+    "8":  {"polarity": "malefic", "effect": "Health and longevity concerns; obstacles and hidden worries. Father's health needs attention."},
+    "9":  {"polarity": "benefic", "effect": "Fortunate and dharmic; rise through luck, father and elders. One of Sun's best houses."},
+    "10": {"polarity": "benefic", "effect": "Career and authority shine; government/administrative success. Strong public position."},
+    "11": {"polarity": "benefic", "effect": "Steady income and gains; fulfilment of ambitions. Good earning placement."},
+    "12": {"polarity": "malefic", "effect": "Drain of energy and money; eye trouble; strained relations with father. Sleep and expenses disturbed."}
+  },
+
+  "Moon": {
+    "1":  {"polarity": "benefic", "effect": "Soft, emotional, well-liked; good imagination. Mind sensitive to surroundings; mother important."},
+    "2":  {"polarity": "benefic", "effect": "Family wealth and good food; sweet speech. Supportive for savings and home comforts."},
+    "3":  {"polarity": "mixed",   "effect": "Restless mind, frequent travel; siblings come and go. Courage fluctuates with mood."},
+    "4":  {"polarity": "benefic", "effect": "Pakka ghar — Moon is at home. Strong emotional security, mother's blessings, property and peace."},
+    "5":  {"polarity": "benefic", "effect": "Creative, good with children, intuitive intelligence. Favours education and romance."},
+    "6":  {"polarity": "malefic", "effect": "Emotional stress and chest/water-related ailments; debts and worries weigh on the mind."},
+    "7":  {"polarity": "mixed",   "effect": "Emotional and attractive partner; mood swings affect marriage. Public-facing work suits."},
+    "8":  {"polarity": "malefic", "effect": "Mental anxiety, fear, and instability; mother's health a concern. Avoid water risks."},
+    "9":  {"polarity": "benefic", "effect": "Fortunate, devout, well-travelled; gains through faith and mother's side. Lucky placement."},
+    "10": {"polarity": "mixed",   "effect": "Public career and changeable profession; reputation tied to emotions. Mother aids career."},
+    "11": {"polarity": "benefic", "effect": "Good income through public/liquid trades; many well-wishers and fulfilled desires."},
+    "12": {"polarity": "malefic", "effect": "Disturbed sleep, isolation, foreign pulls; emotional expenses. Mind needs grounding."}
+  },
+
+  "Mars": {
+    "1":  {"polarity": "mixed",   "effect": "Bold, fiery, athletic; quick temper and accident-prone. Mars positive helps, Mars negative harms."},
+    "2":  {"polarity": "malefic", "effect": "Harsh words damage family wealth and relations; property disputes. Anger costs money."},
+    "3":  {"polarity": "benefic", "effect": "Pakka-ghar energy — courageous, victorious, supportive siblings. One of Mars's best houses."},
+    "4":  {"polarity": "malefic", "effect": "Disturbed home peace and mother's health; property quarrels. Heat in domestic life."},
+    "5":  {"polarity": "mixed",   "effect": "Strong drive and ambition; impatience with children/education. Speculation risky."},
+    "6":  {"polarity": "benefic", "effect": "Crushes enemies, disease and debts; excellent fighter and competitor."},
+    "7":  {"polarity": "malefic", "effect": "Manglik-type friction in marriage; conflict with partners. Patience and remedy advised."},
+    "8":  {"polarity": "malefic", "effect": "Pakka ghar but heavy — accidents, surgery, blood/longevity issues. Handle risk carefully."},
+    "9":  {"polarity": "benefic", "effect": "Energetic fortune; gains through bold action, brothers and father. Good for engineers/soldiers."},
+    "10": {"polarity": "benefic", "effect": "Powerful career drive; success in technical, defence, surgical or land fields."},
+    "11": {"polarity": "benefic", "effect": "Strong gains through effort and competition; ambitions met by force of will."},
+    "12": {"polarity": "malefic", "effect": "Wasted energy, hidden enemies, secret losses; risk of injury abroad or in sleep."}
+  },
+
+  "Mercury": {
+    "1":  {"polarity": "benefic", "effect": "Sharp, witty, good communicator; clever in business. Nervous energy needs an outlet."},
+    "2":  {"polarity": "benefic", "effect": "Earning through speech, trade and accounts; pleasant family wealth."},
+    "3":  {"polarity": "benefic", "effect": "Skilled writer/negotiator; gains through siblings, media and short trips."},
+    "4":  {"polarity": "mixed",   "effect": "Clever at home matters; education helps property. Over-thinking disturbs peace."},
+    "5":  {"polarity": "benefic", "effect": "Intelligent children and good education; strong analytical mind, good for advisory work."},
+    "6":  {"polarity": "mixed",   "effect": "Wins arguments and litigation; nervous/skin ailments possible. Good for law and accounting."},
+    "7":  {"polarity": "benefic", "effect": "Pakka ghar — excellent for business partnership and trade; clever, friendly spouse."},
+    "8":  {"polarity": "malefic", "effect": "Anxiety, nervous disorders, unstable speech; care with contracts and in-laws' wealth."},
+    "9":  {"polarity": "benefic", "effect": "Learned and fortunate; gains through teaching, publishing and travel."},
+    "10": {"polarity": "benefic", "effect": "Career in commerce, communication or analysis; clever professional reputation."},
+    "11": {"polarity": "benefic", "effect": "Multiple income streams through networking and trade; profitable connections."},
+    "12": {"polarity": "malefic", "effect": "Confused thinking, losses in business; weak nerves. Foreign trade can help if remedied."}
+  },
+
+  "Jupiter": {
+    "1":  {"polarity": "benefic", "effect": "Wise, respected, fortunate; good values and health. A natural guide and well-wisher."},
+    "2":  {"polarity": "benefic", "effect": "Family wealth, gold, and good food; truthful speech brings prosperity."},
+    "3":  {"polarity": "mixed",   "effect": "Generous and ethical; effort sometimes lacks focus. Gains via teaching siblings."},
+    "4":  {"polarity": "benefic", "effect": "Peaceful home, property, mother's blessings; contentment and good education."},
+    "5":  {"polarity": "benefic", "effect": "Blessing of children, wisdom and learning; strong for teachers and advisors."},
+    "6":  {"polarity": "malefic", "effect": "Good intentions exploited; debt, disease and disputes despite generosity. Liver care needed."},
+    "7":  {"polarity": "benefic", "effect": "Virtuous spouse and honourable partnerships; good for marriage and counsel."},
+    "8":  {"polarity": "mixed",   "effect": "Interest in occult and inheritance; sudden ups and downs in fortune. Faith protects."},
+    "9":  {"polarity": "benefic", "effect": "Pakka ghar — peak fortune, dharma, guru's grace, prosperity and high values."},
+    "10": {"polarity": "benefic", "effect": "Respected career in teaching, law, finance or advisory roles; ethical authority."},
+    "11": {"polarity": "benefic", "effect": "Large gains, fulfilled hopes, influential elders; wealth grows steadily."},
+    "12": {"polarity": "mixed",   "effect": "Pakka ghar for moksha — spiritual, charitable, good for foreign lands; guard against over-giving."}
+  },
+
+  "Venus": {
+    "1":  {"polarity": "benefic", "effect": "Charming, attractive, artistic; comforts and good marriage prospects. Watch indulgence."},
+    "2":  {"polarity": "benefic", "effect": "Wealth through luxury, art and family; sweet speech and refined tastes."},
+    "3":  {"polarity": "mixed",   "effect": "Sociable and creative; pleasure-seeking can scatter effort. Gains via arts and media."},
+    "4":  {"polarity": "benefic", "effect": "Comfortable home, vehicles, and domestic happiness; mother's affection."},
+    "5":  {"polarity": "benefic", "effect": "Romance, creativity and pleasure; good for love, children and entertainment."},
+    "6":  {"polarity": "malefic", "effect": "Pleasures bring debt and ailments; reproductive/urinary care. Indulgence backfires."},
+    "7":  {"polarity": "benefic", "effect": "Pakka ghar — excellent for marriage, beauty and partnership; loving, attractive spouse."},
+    "8":  {"polarity": "malefic", "effect": "Hidden affairs, reproductive issues, secret expenses; marriage needs care."},
+    "9":  {"polarity": "benefic", "effect": "Fortunate, refined, luxurious travel; gains through arts and in-laws."},
+    "10": {"polarity": "benefic", "effect": "Career in art, beauty, luxury, media or diplomacy; pleasant public image."},
+    "11": {"polarity": "benefic", "effect": "Gains through art, women, luxury trade; many friends and fulfilled desires."},
+    "12": {"polarity": "mixed",   "effect": "Strong for bed-comforts and foreign luxury; secret pleasures cause expense. Good for retreat and art."}
+  },
+
+  "Saturn": {
+    "1":  {"polarity": "malefic", "effect": "Early hardship and delays; serious, disciplined nature. Rewards come late with patience."},
+    "2":  {"polarity": "mixed",   "effect": "Slow but steady wealth; harsh/measured speech. Family responsibilities weigh early."},
+    "3":  {"polarity": "benefic", "effect": "Disciplined effort and courage; gains through persistent labour and siblings."},
+    "4":  {"polarity": "malefic", "effect": "Cold home atmosphere, property delays, mother's hardship. Peace earned slowly."},
+    "5":  {"polarity": "malefic", "effect": "Delay/difficulty with children and education; serious, restrained creativity."},
+    "6":  {"polarity": "benefic", "effect": "Defeats enemies, disease and debt through endurance; good for service and law."},
+    "7":  {"polarity": "mixed",   "effect": "Late but stable marriage; mature, hardworking partner. Patience essential."},
+    "8":  {"polarity": "mixed",   "effect": "Longevity and interest in depth/occult; chronic issues; gains via inheritance late."},
+    "9":  {"polarity": "mixed",   "effect": "Fortune through sustained karma and elders; faith tested then rewarded."},
+    "10": {"polarity": "benefic", "effect": "Pakka ghar — powerful career through discipline and labour; authority earned, lasting status."},
+    "11": {"polarity": "benefic", "effect": "Large, steady gains over time; profits from service, iron, oil, labour, machinery."},
+    "12": {"polarity": "mixed",   "effect": "Pakka-ghar zone — good for isolation, foreign lands, spirituality; guard against losses and insomnia."}
+  },
+
+  "Rahu": {
+    "1":  {"polarity": "malefic", "effect": "Confused identity, sudden ups and downs; headaches and impulsive decisions. Remedy advised."},
+    "2":  {"polarity": "malefic", "effect": "Unstable wealth and harsh/false speech; family/eye troubles. Money comes and vanishes."},
+    "3":  {"polarity": "benefic", "effect": "Bold, ambitious, clever schemer; gains through media, technology and daring effort."},
+    "4":  {"polarity": "malefic", "effect": "Domestic unrest, mother's health, property confusion; peace of mind disturbed."},
+    "5":  {"polarity": "malefic", "effect": "Trouble with children/conception and education; risky speculation. Handle carefully."},
+    "6":  {"polarity": "benefic", "effect": "Strong against enemies and disease; clever in litigation and competitive fields."},
+    "7":  {"polarity": "malefic", "effect": "Confusion and deceit in marriage/partnership; sudden separations possible. Remedy advised."},
+    "8":  {"polarity": "malefic", "effect": "Sudden events, accidents, occult pulls, hidden losses; longevity stress. Caution needed."},
+    "9":  {"polarity": "malefic", "effect": "Unconventional beliefs; luck and father's relations unstable. Faith wavers."},
+    "10": {"polarity": "mixed",   "effect": "Sudden career rise through unconventional means; reputation volatile. Politics/tech favoured."},
+    "11": {"polarity": "benefic", "effect": "Big, sudden gains and influential network; ambitions met — but income is erratic."},
+    "12": {"polarity": "mixed",   "effect": "Pakka ghar — foreign lands, isolation and spirituality favoured; expenses and confusion if afflicted."}
+  },
+
+  "Ketu": {
+    "1":  {"polarity": "malefic", "effect": "Detached, confused sense of self; headaches and self-doubt. Direction feels missing."},
+    "2":  {"polarity": "malefic", "effect": "Unstable family wealth and speech; dental/eye matters. Savings leak unexpectedly."},
+    "3":  {"polarity": "benefic", "effect": "Courageous, intuitive, detached effort; gains through siblings and occult skills."},
+    "4":  {"polarity": "malefic", "effect": "Restless home life, mother's health, property detachment; emotional emptiness."},
+    "5":  {"polarity": "mixed",   "effect": "Spiritual but anxious about children/education; intuitive intelligence, weak speculation."},
+    "6":  {"polarity": "benefic", "effect": "Pakka ghar — excellent against enemies, disease and debts; sharp, victorious instinct."},
+    "7":  {"polarity": "malefic", "effect": "Detachment or misunderstandings in marriage; partner's health. Keep a dog, per tradition."},
+    "8":  {"polarity": "mixed",   "effect": "Occult insight and sudden events; chronic hidden issues. Spiritually deepening but unstable."},
+    "9":  {"polarity": "mixed",   "effect": "Deeply spiritual and philosophical; father's relations detached; luck through dharma."},
+    "10": {"polarity": "mixed",   "effect": "Unconventional or spiritual career; fluctuating reputation; detachment from ambition."},
+    "11": {"polarity": "benefic", "effect": "Sudden, intuitive gains; fulfilled desires through unconventional means and friends."},
+    "12": {"polarity": "benefic", "effect": "Strong for moksha, foreign lands and spirituality; detachment eases expenses and bondage."}
+  }
+}
