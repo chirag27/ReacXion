@@ -10,12 +10,13 @@ import com.vaastu.survey.ui.SurveyState
 import java.io.ByteArrayOutputStream
 import java.util.Locale
 
+private const val W = 595 // A4 @ 72dpi
+private const val H = 842
+private const val MARGIN = 40f
+private const val LINE = 16f
+
 /** Renders a multi-page PDF Vaastu report (plan diagram + tables). */
 object PdfReporter {
-    private const val W = 595 // A4 @ 72dpi
-    private const val H = 842
-    private const val MARGIN = 40f
-    private const val LINE = 16f
 
     fun generate(state: SurveyState): ByteArray {
         val doc = PdfDocument()
