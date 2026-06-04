@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.PinDrop
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +48,7 @@ private enum class Tab(val label: String, val icon: ImageVector) {
     WALK("Walk", Icons.Filled.Explore),
     ELEVATION("Elevation", Icons.Filled.Height),
     EXPORT("Export", Icons.Filled.IosShare),
+    SETTINGS("Settings", Icons.Filled.Settings),
 }
 
 private fun hasPermission(ctx: Context, perm: String): Boolean =
@@ -108,6 +110,7 @@ fun VaastuApp() {
                 Tab.WALK -> WalkScreen(vm)
                 Tab.ELEVATION -> ElevationScreen(vm)
                 Tab.EXPORT -> ExportScreen(vm)
+                Tab.SETTINGS -> SettingsScreen(vm)
             }
         }
     }

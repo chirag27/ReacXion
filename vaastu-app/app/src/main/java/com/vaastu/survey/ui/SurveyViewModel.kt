@@ -1,7 +1,9 @@
 package com.vaastu.survey.ui
 
 import android.app.Application
+import android.content.Intent
 import android.hardware.GeomagneticField
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.vaastu.survey.core.geo.Bearing
@@ -13,11 +15,18 @@ import com.vaastu.survey.core.geo.GeoPoint
 import com.vaastu.survey.core.geo.Polygon
 import com.vaastu.survey.core.geo.VaastuZone
 import com.vaastu.survey.core.geo.Vec2
-import com.vaastu.survey.location.LocationRepository
+import com.vaastu.survey.data.SavedPlot
+import com.vaastu.survey.data.SurveyRepository
+import com.vaastu.survey.location.LocationBus
+import com.vaastu.survey.location.LocationForegroundService
+import com.vaastu.survey.location.LocationSource
 import com.vaastu.survey.sensors.HeadingProvider
+import com.vaastu.survey.settings.AppSettings
+import com.vaastu.survey.settings.SettingsStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -46,6 +55,7 @@ data class ElevMarkUi(
     val relElevM: Double,
     val zone: VaastuZone?,
     val note: String,
+    val photoPath: String? = null,
 )
 
 enum class CenterMode { CENTROID, MEAN }
@@ -57,6 +67,8 @@ data class SurveyState(
     val hasBarometer: Boolean = false,
     val declinationDeg: Float = 0f,
     val centerMode: CenterMode = CenterMode.CENTROID,
+    val locationSource: LocationSource = LocationSource.PHONE,
+    val locationStatus: String = "Idle",
     val vertices: List<VertexUi> = emptyList(),
     val center: GeoPoint? = null,
     val boundary: List<BndPoint> = emptyList(),
@@ -75,8 +87,10 @@ data class SurveyState(
 
 class SurveyViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val locationRepo = LocationRepository(app)
+    private val appCtx: Application = app
     private val headingProvider = HeadingProvider(app)
+    private val repo = SurveyRepository(app)
+    private val settingsStore = SettingsStore(app)
 
     private val _state = MutableStateFlow(SurveyState())
     val state: StateFlow<SurveyState> = _state.asStateFlow()
@@ -85,24 +99,71 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
     private var declinationSet = false
     private var walkLastPoint: GeoPoint? = null
     private var walkAccum = 0.0
-    private var collecting = false
+    private var started = false
+    private var settings = AppSettings()
 
     init {
         _state.update { it.copy(hasBarometer = headingProvider.hasPressureSensor()) }
         viewModelScope.launch {
-            headingProvider.headingFlow().collect { h ->
-                _state.update { it.copy(heading = h) }
+            headingProvider.headingFlow().collect { h -> _state.update { it.copy(heading = h) } }
+        }
+        viewModelScope.launch {
+            LocationBus.status.collect { s -> _state.update { it.copy(locationStatus = s) } }
+        }
+        viewModelScope.launch {
+            settingsStore.settings.collect { s ->
+                val changed = s != settings
+                settings = s
+                _state.update { it.copy(locationSource = s.source) }
+                if (started && changed) startService()
+            }
+        }
+        viewModelScope.launch {
+            repo.load()?.let { restore(it) }
+        }
+    }
+
+    /** Call once location permission is granted. Starts the FGS and observes fixes. */
+    fun startLocation() {
+        if (started) return
+        started = true
+        startService()
+        viewModelScope.launch {
+            LocationBus.positions.filterNotNull().collect { loc -> onLocation(loc) }
+        }
+    }
+
+    private fun startService() {
+        val intent = LocationForegroundService.intent(appCtx, settings.source, settings.rtkMac)
+        ContextCompat.startForegroundService(appCtx, intent)
+    }
+
+    private fun restore(saved: SavedPlot) {
+        if (_state.value.vertices.isNotEmpty()) return // don't clobber an in-progress survey
+        if (saved.declinationDeg != 0f) declinationSet = true
+        _state.update {
+            it.copy(
+                plotName = saved.name,
+                centerMode = saved.centerMode,
+                declinationDeg = saved.declinationDeg,
+                vertices = saved.vertices,
+                elevMarks = saved.marks,
+            )
+        }
+        recompute()
+        if (saved.sideWalks.isNotEmpty()) {
+            _state.update { st ->
+                st.copy(
+                    sides = st.sides.map { s ->
+                        saved.sideWalks[s.from]?.let { w -> s.copy(walkedM = w, deltaM = abs(w - s.straightM)) } ?: s
+                    },
+                )
             }
         }
     }
 
-    /** Call once location permission is granted. Safe to call again (no-op). */
-    fun startLocation() {
-        if (collecting) return
-        collecting = true
-        viewModelScope.launch {
-            locationRepo.locationFlow().collect { loc -> onLocation(loc) }
-        }
+    private fun persist() {
+        viewModelScope.launch { runCatching { repo.save(_state.value) } }
     }
 
     private fun onLocation(loc: GeoPoint) {
@@ -117,13 +178,11 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
             declinationSet = true
             _state.update { it.copy(declinationDeg = gf.declination) }
         }
-
         if (_state.value.capturing) {
             captureBuffer.add(loc)
             _state.update { it.copy(captureSamples = captureBuffer.size) }
             if (captureBuffer.size >= TARGET_SAMPLES) finishCapture()
         }
-
         if (_state.value.walkSideIndex != null) integrateWalk(loc)
         updateElevation(loc)
     }
@@ -177,6 +236,7 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
             )
         }
         recompute()
+        persist()
     }
 
     fun undoLastVertex() {
@@ -186,6 +246,7 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
             it.copy(vertices = verts.dropLast(1).mapIndexed { i, v -> v.copy(index = i) })
         }
         recompute()
+        persist()
     }
 
     fun resetPlot() {
@@ -199,13 +260,32 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
                 location = it.location,
                 heading = it.heading,
                 centerMode = it.centerMode,
+                locationSource = it.locationSource,
+                locationStatus = it.locationStatus,
             )
         }
+        persist()
     }
 
     fun setCenterMode(mode: CenterMode) {
         _state.update { it.copy(centerMode = mode) }
         recompute()
+        persist()
+    }
+
+    fun setPlotName(name: String) {
+        _state.update { it.copy(plotName = name) }
+        persist()
+    }
+
+    // ---- Settings / source ----
+
+    fun setSource(source: LocationSource) {
+        viewModelScope.launch { settingsStore.setSource(source) }
+    }
+
+    fun setRtkMac(mac: String?) {
+        viewModelScope.launch { settingsStore.setRtkMac(mac) }
     }
 
     // ---- Geometry recompute ----
@@ -247,7 +327,7 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
         val n = local.size
         if (n < 2) return emptyList()
         val prev = _state.value.sides.associateBy { it.from }
-        val count = if (n >= 3) n else n - 1 // only close the ring for a polygon
+        val count = if (n >= 3) n else n - 1
         val list = ArrayList<SideUi>()
         for (i in 0 until count) {
             val a = i
@@ -279,6 +359,7 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
             val s = sides[si]
             sides[si] = s.copy(walkedM = walked, deltaM = abs(walked - s.straightM))
             _state.update { it.copy(sides = sides) }
+            persist()
         }
         walkLastPoint = null
         _state.update { it.copy(walkSideIndex = null) }
@@ -309,13 +390,13 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun markElevation(label: String, note: String) {
+    fun markElevation(label: String, note: String, photoPath: String? = null) {
         val loc = _state.value.location ?: return
         val rel = _state.value.currentRelElevM ?: 0.0
         val center = _state.value.center
         val zone = if (center != null) {
             val proj = EnuProjection(center.lat, center.lon)
-            val p = proj.toLocal(loc) // offset from center
+            val p = proj.toLocal(loc)
             val bTrue = Bearing.fromCenter(Vec2(0.0, 0.0), p)
             val bMag = ((bTrue - _state.value.declinationDeg) % 360 + 360) % 360
             VaastuZone.fromBearing(bMag)
@@ -323,19 +404,22 @@ class SurveyViewModel(app: Application) : AndroidViewModel(app) {
             null
         }
         val label2 = label.ifBlank { "Mark ${_state.value.elevMarks.size + 1}" }
-        val mark = ElevMarkUi(System.currentTimeMillis(), label2, loc, rel, zone, note)
+        val mark = ElevMarkUi(System.currentTimeMillis(), label2, loc, rel, zone, note, photoPath)
         _state.update { it.copy(elevMarks = it.elevMarks + mark) }
+        persist()
     }
 
     fun deleteMark(id: Long) {
         _state.update { it.copy(elevMarks = it.elevMarks.filterNot { m -> m.id == id }) }
+        persist()
     }
 
-    fun setPlotName(name: String) {
-        _state.update { it.copy(plotName = name) }
+    override fun onCleared() {
+        appCtx.stopService(Intent(appCtx, LocationForegroundService::class.java))
+        super.onCleared()
     }
 
     companion object {
-        const val TARGET_SAMPLES = 8 // ~8 fixes (~8 s) averaged per corner
+        const val TARGET_SAMPLES = 8
     }
 }

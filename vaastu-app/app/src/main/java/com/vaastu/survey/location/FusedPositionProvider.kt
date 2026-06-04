@@ -13,17 +13,14 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-/**
- * Thin wrapper over the fused location provider. This is the seam where a
- * Bluetooth RTK provider can later be swapped in: anything emitting Flow<GeoPoint>.
- */
-class LocationRepository(context: Context) {
-    private val appContext = context.applicationContext
-    private val client = LocationServices.getFusedLocationProviderClient(appContext)
+/** Phone GNSS via Google Play Services fused location. */
+class FusedPositionProvider(context: Context) : PositionProvider {
+    override val sourceName = "Phone GNSS"
+    private val client = LocationServices.getFusedLocationProviderClient(context.applicationContext)
 
     @SuppressLint("MissingPermission")
-    fun locationFlow(intervalMs: Long = 1000L): Flow<GeoPoint> = callbackFlow {
-        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, intervalMs)
+    override fun positions(): Flow<GeoPoint> = callbackFlow {
+        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L)
             .setMinUpdateIntervalMillis(500L)
             .setWaitForAccurateLocation(true)
             .build()
@@ -42,7 +39,6 @@ class LocationRepository(context: Context) {
                 )
             }
         }
-
         client.requestLocationUpdates(request, callback, Looper.getMainLooper())
         awaitClose { client.removeLocationUpdates(callback) }
     }

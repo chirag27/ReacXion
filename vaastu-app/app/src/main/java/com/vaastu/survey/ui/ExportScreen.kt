@@ -21,32 +21,40 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.vaastu.survey.data.Exporters
+import com.vaastu.survey.data.PdfReporter
 
 @Composable
 fun ExportScreen(vm: SurveyViewModel) {
     val state by vm.state.collectAsState()
     val context = LocalContext.current
-    var pendingContent by remember { mutableStateOf("") }
+    var pendingText by remember { mutableStateOf("") }
+    var pendingBytes by remember { mutableStateOf(ByteArray(0)) }
 
-    fun write(uri: Uri?) {
+    fun writeText(uri: Uri?) {
         if (uri == null) return
         runCatching {
-            context.contentResolver.openOutputStream(uri)?.use { os ->
-                os.write(pendingContent.toByteArray())
-            }
-        }.onSuccess {
-            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
-        }.onFailure {
-            Toast.makeText(context, "Save failed: ${it.message}", Toast.LENGTH_LONG).show()
-        }
+            context.contentResolver.openOutputStream(uri)?.use { it.write(pendingText.toByteArray()) }
+        }.onSuccess { Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show() }
+            .onFailure { Toast.makeText(context, "Save failed: ${it.message}", Toast.LENGTH_LONG).show() }
+    }
+
+    fun writeBytes(uri: Uri?) {
+        if (uri == null) return
+        runCatching {
+            context.contentResolver.openOutputStream(uri)?.use { it.write(pendingBytes) }
+        }.onSuccess { Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show() }
+            .onFailure { Toast.makeText(context, "Save failed: ${it.message}", Toast.LENGTH_LONG).show() }
     }
 
     val csvLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("text/csv"),
-    ) { write(it) }
+    ) { writeText(it) }
     val jsonLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/geo+json"),
-    ) { write(it) }
+    ) { writeText(it) }
+    val pdfLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/pdf"),
+    ) { writeBytes(it) }
 
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         Text("Export", style = MaterialTheme.typography.titleLarge)
@@ -63,7 +71,7 @@ fun ExportScreen(vm: SurveyViewModel) {
         val ready = state.boundary.isNotEmpty()
         Button(
             onClick = {
-                pendingContent = Exporters.csv(state)
+                pendingText = Exporters.csv(state)
                 csvLauncher.launch("${safeName(state.plotName)}.csv")
             },
             enabled = ready,
@@ -72,12 +80,21 @@ fun ExportScreen(vm: SurveyViewModel) {
 
         Button(
             onClick = {
-                pendingContent = Exporters.geoJson(state)
+                pendingText = Exporters.geoJson(state)
                 jsonLauncher.launch("${safeName(state.plotName)}.geojson")
             },
             enabled = ready,
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-        ) { Text("Export GeoJSON (open in Google Earth / QGIS)") }
+        ) { Text("Export GeoJSON (Google Earth / QGIS)") }
+
+        Button(
+            onClick = {
+                pendingBytes = PdfReporter.generate(state)
+                pdfLauncher.launch("${safeName(state.plotName)}.pdf")
+            },
+            enabled = ready,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        ) { Text("Export PDF report") }
 
         if (!ready) {
             Text(
