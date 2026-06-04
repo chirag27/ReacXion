@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple compass needle motif on the adaptive foreground safe zone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,28 L62,54 L54,50 L46,54 Z" />
+    <path
+        android:fillColor="#FFD24D"
+        android:pathData="M54,80 L46,54 L54,58 L62,54 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,30 m-1,0 a1,1 0 1,0 2,0 a1,1 0 1,0 -2,0" />
+</vector>
