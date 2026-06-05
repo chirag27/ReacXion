@@ -13,10 +13,13 @@ import pytest
 
 from engine.chart import compute_chart
 from engine.constants import PRESET_KP, PRESET_VEDIC
+from engine.dasha import balance_at_birth
+from engine.varga import divisional_chart
 
 from tests.golden_charts import GOLDEN_CHARTS, ExpectedChart, GoldenChart
 
 ARCMINUTE = 1.0 / 60.0
+DASHA_YEAR_TOL = 0.01   # years (~3.7 days) on the balance-at-birth
 
 
 def angular_diff(a: float, b: float) -> float:
@@ -112,3 +115,33 @@ def test_kp_chart(golden: GoldenChart):
         pytest.skip(f"{golden.label}: KP expected values are TODO (fill from KP tool)")
     chart = compute_chart(golden.birth, *PRESET_KP)
     _check(chart, golden.kp, f"{golden.label}/kp")
+
+
+@pytest.mark.parametrize("golden", GOLDEN_CHARTS, ids=lambda g: g.label)
+def test_dasha_balance_at_birth(golden: GoldenChart):
+    if golden.dasha_balance is None:
+        pytest.skip(f"{golden.label}: dasha balance is TODO (fill from JHora)")
+    expected_lord, expected_years = golden.dasha_balance
+    chart = compute_chart(golden.birth, *PRESET_VEDIC)
+    lord, years, _days = balance_at_birth(chart.planets["Moon"].longitude)
+    assert lord == expected_lord, (
+        f"[{golden.label}] dasha lord {lord} vs expected {expected_lord}"
+    )
+    assert abs(years - expected_years) <= DASHA_YEAR_TOL, (
+        f"[{golden.label}] balance {years:.4f}y vs expected {expected_years:.4f}y"
+    )
+
+
+@pytest.mark.parametrize("golden", GOLDEN_CHARTS, ids=lambda g: g.label)
+def test_varga_placements(golden: GoldenChart):
+    if not golden.vargas:
+        pytest.skip(f"{golden.label}: varga placements are TODO (fill from JHora)")
+    chart = compute_chart(golden.birth, *PRESET_VEDIC)
+    for code, placements in golden.vargas.items():
+        vc = divisional_chart(chart, code)
+        for planet, expected_sign in placements.items():
+            actual = vc.planet_signs[planet]
+            assert actual == expected_sign, (
+                f"[{golden.label}] {code} {planet} {actual} vs expected "
+                f"{expected_sign}"
+            )

@@ -1,8 +1,10 @@
 # Astrology Engine — Phase 1 (Calculation Core)
 
 A deterministic astronomical calculation engine for Vedic, KP, and (later) Lal
-Kitab astrology. This is **Phase 1**: the calculation core only. There is no
-interpretation layer yet.
+Kitab astrology, built phase by phase per [`BUILD_PLAN.md`](BUILD_PLAN.md).
+**Phases 1–2 are complete** (chart core + dasha/vargas/aspects/dignity); there
+is still no LLM interpretation layer — everything here is deterministic
+computation.
 
 ## The one rule: computation vs. interpretation
 
@@ -34,18 +36,27 @@ the numerical surface is small and auditable.
 
 ```
 astro/
+├── BUILD_PLAN.md           # the full 8-phase plan (reference across sessions)
 ├── engine/                 # DETERMINISTIC core (no LLM, ever)
 │   ├── constants.py        # signs, 27 nakshatras, Vimshottari lords/years, presets
 │   ├── birth_data.py       # BirthData model + robust local-time -> UTC
 │   ├── ephemeris.py        # the ONLY module that imports swisseph
 │   ├── nakshatra.py        # pure math: longitude -> nakshatra + pada
 │   ├── kp_sublord.py       # pure math: KP 249 sub-lord system
-│   └── chart.py            # compute_chart(): orchestrates into an immutable Chart
+│   ├── chart.py            # compute_chart(): orchestrates into an immutable Chart
+│   ├── dasha.py            # [P2] Vimshottari Maha->Antar->Pratyantar->Sookshma
+│   ├── varga.py            # [P2] divisional charts (D1..D60), data-driven
+│   ├── aspects.py          # [P2] graha drishti (Parashari aspects)
+│   └── dignity.py          # [P2] exalt/debil/moolatrikona/own/friend/enemy
 ├── tests/
 │   ├── golden_charts.py    # 3 golden charts; expected values are TODO placeholders
 │   ├── test_birth_data.py  # timezone -> UTC (deterministic)
 │   ├── test_kp_sublord.py  # 249-segment structure + known sub-lords
 │   ├── test_chart.py       # structural smoke tests
+│   ├── test_dasha.py       # [P2] dasha balance, ordering, nesting
+│   ├── test_varga.py       # [P2] varga rules (D9 continuity, D30 bands, ...)
+│   ├── test_aspects.py     # [P2] drishti (7th + special aspects)
+│   ├── test_dignity.py     # [P2] dignity classification
 │   └── test_golden.py      # arcminute match vs JHora (skips until filled)
 └── data/
     └── ephe/               # optional Swiss *.se1 files (git-ignored)
@@ -127,6 +138,47 @@ boundary falls inside a sub**, produce the canonical **249** distinct segments.
 suite asserts it has exactly 249 segments); the engine itself uses the
 per-longitude resolver `resolve()` for every planet and every cusp.
 
+## Phase 2 — dasha, vargas, aspects, dignity
+
+All Phase-2 modules are pure arithmetic layered on a Phase-1 `Chart` (no new
+ephemeris calls), exposed as standalone functions ready to become agent tools.
+
+```python
+from engine import (compute_vedic_chart, chart_vimshottari, dasha_at,
+                    divisional_chart, graha_drishti, chart_dignities)
+from datetime import datetime, timezone
+
+chart = compute_vedic_chart(birth)
+
+# Vimshottari dasha (Maha > Antar > Pratyantar > Sookshma)
+mahas = chart_vimshottari(chart, depth=4)
+active = dasha_at(mahas, datetime(2025, 6, 1, tzinfo=timezone.utc))
+print(" > ".join(p.lord for p in active))   # e.g. "Venus > Saturn > Mercury > Ketu"
+
+# Divisional charts (D1..D60)
+d9 = divisional_chart(chart, "D9")           # Navamsa
+print(d9.planet_signs["Moon"], d9.ascendant_sign)
+
+# Aspects and dignity
+print(graha_drishti(chart)["Mars"].aspected_planets)
+print(chart_dignities(chart)["Sun"].state)   # exalted/own/friend/...
+```
+
+- **Dasha** is computed from the Moon's nakshatra longitude with exact UTC
+  start/end datetimes. The **year length** (`year_length_days`, default Julian
+  365.25) is the key knob for matching a reference tool's long-range dates; the
+  *balance-at-birth in years* is year-length-independent.
+- **Vargas** are **data-driven**: each chart is one entry in `engine.varga.VARGAS`
+  with a `(sign, part) -> sign` rule (or a special handler for the unequal D30
+  Trimsamsa). Rules follow standard BPHS; several vargas have competing
+  conventions, so the golden charts are the source of truth — adjust a single
+  rule if your reference differs.
+- **Drishti**: every graha aspects its 7th; Mars also 4th/8th, Jupiter 5th/9th,
+  Saturn 3rd/10th. Node aspects default to the 7th only (configurable).
+- **Dignity**: exaltation/debilitation points, moolatrikona ranges, own sign,
+  and natural (naisargika) friendship. Temporary friendship is a later
+  refinement; nodes report `neutral`.
+
 ## Validation workflow
 
 The three golden charts in `tests/golden_charts.py` ship with expected values
@@ -144,7 +196,19 @@ left as `None` (TODO). To validate:
 For the tightest match to JHora, install the Swiss `*.se1` files
 (`data/README.md`) and call `ephemeris.set_ephemeris_path("data/ephe")`.
 
+**Phase 2 validation** (also TODO placeholders in `golden_charts.py`):
+
+- `dasha_balance = ("<lord>", <years>)` — the Mahadasha balance-at-birth from
+  JHora's Vimshottari table.
+- `vargas = {"D9": {"Sun": "Leo", ...}, ...}` — key divisional placements from
+  JHora's varga charts.
+
+Filled values are asserted by `test_dasha_balance_at_birth` and
+`test_varga_placements`.
+
 ## Scope
 
-Phase 1 stops here: calculation only. Dasha timelines, yogas, Lal Kitab
-specifics, and the LLM interpretation layer are later phases.
+Phases 1–2 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
+divisional charts, graha drishti, and dignity — all deterministic. Phase 3
+(codified yogas/interpretation rules) onward, and the LLM interpretation layer,
+follow per `BUILD_PLAN.md`.

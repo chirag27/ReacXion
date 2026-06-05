@@ -25,6 +25,23 @@ from .constants import (
 )
 from .kp_sublord import KPLords, build_kp_249_table, resolve as kp_resolve
 from .nakshatra import NakshatraInfo, nakshatra_of
+from .dasha import (
+    DashaPeriod,
+    balance_at_birth,
+    chart_vimshottari,
+    dasha_at,
+    vimshottari_dasha,
+)
+from .varga import (
+    VARGAS,
+    Varga,
+    VargaChart,
+    divisional_chart,
+    varga_sign,
+    varga_sign_index,
+)
+from .aspects import PlanetAspect, aspects_between, graha_drishti
+from .dignity import DignityInfo, chart_dignities, planet_dignity
 
 __all__ = [
     "BirthData",
@@ -46,4 +63,25 @@ __all__ = [
     "build_kp_249_table",
     "NakshatraInfo",
     "nakshatra_of",
+    # Phase 2 — dasha
+    "DashaPeriod",
+    "vimshottari_dasha",
+    "chart_vimshottari",
+    "dasha_at",
+    "balance_at_birth",
+    # Phase 2 — vargas
+    "Varga",
+    "VargaChart",
+    "VARGAS",
+    "divisional_chart",
+    "varga_sign",
+    "varga_sign_index",
+    # Phase 2 — aspects
+    "PlanetAspect",
+    "graha_drishti",
+    "aspects_between",
+    # Phase 2 — dignity
+    "DignityInfo",
+    "planet_dignity",
+    "chart_dignities",
 ]

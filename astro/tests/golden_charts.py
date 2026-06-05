@@ -62,6 +62,15 @@ class GoldenChart:
     vedic: ExpectedChart = field(default_factory=ExpectedChart)   # Lahiri + whole-sign
     kp: ExpectedChart = field(default_factory=ExpectedChart)      # KP + Placidus
 
+    # ---- Phase 2 expectations (computed on the Vedic / Lahiri chart) ----
+    # Balance-of-dasha at birth as (lord, years), e.g. ("Venus", 12.345).
+    # The years value is fraction-based and independent of the dasha year-length.
+    dasha_balance: Optional[tuple] = None
+
+    # Key divisional placements: {"D9": {"Sun": "Leo", ...}, "D10": {...}}.
+    # Fill only the planets/vargas you want asserted.
+    vargas: Optional[Dict[str, Dict[str, str]]] = None
+
 
 # --------------------------------------------------------------------------- #
 # Three golden charts chosen to exercise distinct timezone regimes.
