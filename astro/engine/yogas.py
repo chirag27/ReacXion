@@ -95,20 +95,45 @@ def _pancha_mahapurusha(hc, dignities) -> List[Yoga]:
     return out
 
 
-def _gaja_kesari(signs) -> List[Yoga]:
+def _gaja_kesari(signs, dignities, drishti, longs) -> List[Yoga]:
+    """Gaja Kesari (B.V. Raman definition).
+
+    Jupiter in a kendra from the Moon, AND Jupiter is not debilitated, combust,
+    or in an enemy's sign, AND a benefic (Mercury/Venus/Moon) conjoins or
+    aspects Jupiter.
+    """
     h = _kendra_from(signs["Jupiter"], signs["Moon"])
-    if h in (1, 4, 7, 10):
-        return [Yoga(
-            name="Gaja Kesari Yoga",
-            category="Lunar",
-            planets=("Jupiter", "Moon"),
-            description=f"Jupiter is in kendra (house {h}) from the Moon",
-            triggers=(
-                f"Jupiter in {SIGN_NAMES[signs['Jupiter']]}",
-                f"Moon in {SIGN_NAMES[signs['Moon']]}",
-                f"Jupiter is {h}th from the Moon"),
-        )]
-    return []
+    if h not in (1, 4, 7, 10):
+        return []
+
+    jdig = dignities["Jupiter"]
+    if jdig.is_debilitated or jdig.state == "enemy":
+        return []
+    # Combustion: Jupiter within 11° of the Sun.
+    sep = abs((longs["Jupiter"] - longs["Sun"]) % 360.0)
+    if min(sep, 360.0 - sep) < 11.0:
+        return []
+
+    benefics = ("Mercury", "Venus", "Moon")
+    associated = [
+        b for b in benefics
+        if signs[b] == signs["Jupiter"] or "Jupiter" in drishti[b].aspected_planets
+    ]
+    if not associated:
+        return []
+
+    return [Yoga(
+        name="Gaja Kesari Yoga",
+        category="Lunar",
+        planets=("Jupiter", "Moon"),
+        description=(
+            f"Jupiter (in {jdig.sign}, {jdig.state}) is in kendra (house {h}) "
+            f"from the Moon and supported by {', '.join(associated)}"),
+        triggers=(
+            f"Jupiter is {h}th (kendra) from the Moon",
+            f"Jupiter is not debilitated/combust/in an enemy sign ({jdig.state})",
+            f"benefic support: {', '.join(associated)}"),
+    )]
 
 
 def _conjunction_yoga(signs, a, b, name, category, desc) -> List[Yoga]:
@@ -194,7 +219,7 @@ def detect_yogas(chart) -> List[Yoga]:
 
     yogas: List[Yoga] = []
     yogas += _pancha_mahapurusha(hc, dignities)
-    yogas += _gaja_kesari(signs)
+    yogas += _gaja_kesari(signs, dignities, drishti, longs)
     yogas += _conjunction_yoga(
         signs, "Sun", "Mercury", "Budha-Aditya Yoga", "Solar",
         "Sun and Mercury conjoin in {sign} (intelligence)")

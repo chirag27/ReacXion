@@ -16,7 +16,12 @@ Precedence (highest first):
      only kendras loses sheen; a natural malefic ruling a kendra improves).
 
 Schools differ (e.g. the Systems Approach uses fixed per-lagna lists); this is
-the classical interpretation and is documented as such.
+the classical interpretation and is documented as such. Note one deliberate
+divergence from Jagannatha Hora's coarser scheme: JHora flags only the lords of
+3/6/11 as functional malefics (treating 2/8/12 lords as neutral), whereas this
+module treats *all* dusthana (6/8/12) lords as malefic. The two agree except
+for a planet whose sole rulership is the 8th or 12th (only the Sun/Moon, which
+own a single sign, ever hit this case).
 
 Pure arithmetic; no ephemeris dependency.
 """

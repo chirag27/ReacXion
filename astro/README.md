@@ -240,10 +240,21 @@ Results across all 3 charts × both ayanamsas:
 | Vimshottari lords + balance | lords exact; balance within 0.001 yr |
 | D9 Navamsa | **exact** |
 | Sarvashtakavarga | **exact** (all 3 charts; benefic tables transcribed from JHora) |
+| Yoga detection (matching set) | **27/27** across the 3 charts (after refining Gaja Kesari) |
+| Functional benefic/malefic | 80/84 lagna×planet (4 documented schools-differences) |
 
-Two engine corrections came directly out of this validation: switching to
-**true geometric positions** (the ~20″ aberration fix) and defaulting the dasha
-year to the **sidereal year**.
+Three engine corrections came directly out of validation: switching to **true
+geometric positions** (the ~20″ aberration fix), defaulting the dasha year to
+the **sidereal year**, and tightening **Gaja Kesari** to the B.V. Raman
+definition (kendra-from-Moon *plus* benefic support *and* Jupiter not
+debilitated/combust/in an enemy sign) — the basic version over-detected.
+
+**Phase-3 spot-check notes.** The matching yogas (Pancha Mahapurusha, Gaja
+Kesari, Budha-Aditya, Chandra-Mangala, Kemadruma) agree with PyJHora on all
+three charts. Neecha Bhanga has no PyJHora detector to compare against. The
+functional-nature differences are all the same case — a luminary ruling only
+the 8th or 12th — where this engine says *malefic* (full dusthana view) and
+JHora says *neutral* (3/6/11-only view); documented in `engine/functional.py`.
 
 **Still requiring confirmation in the JHora GUI:** the convention-dependent
 divisional charts (D2, D3, D4, D10, D12, D24, D30, D40, D45, D60). This engine

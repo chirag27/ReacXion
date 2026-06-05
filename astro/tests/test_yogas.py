@@ -30,10 +30,18 @@ def test_sasa_pancha_mahapurusha():
 
 
 def test_gaja_kesari():
-    # Jupiter in a kendra (4th) from the Moon.
-    chart = make_chart(ascendant=200.0, Moon=10.0, Jupiter=100.0,
-                       Sun=250, Mars=280, Mercury=40, Venus=70, Saturn=310)
+    # Jupiter exalted in Cancer, 4th from the Moon, with benefic Venus conjoining
+    # it (B.V. Raman conditions: kendra-from-Moon + benefic support + not weak).
+    chart = make_chart(ascendant=200.0, Moon=10.0, Jupiter=100.0, Venus=95.0,
+                       Sun=250, Mars=280, Mercury=40, Saturn=310)
     assert "Gaja Kesari Yoga" in names(chart)
+
+
+def test_gaja_kesari_rejected_in_enemy_sign():
+    # Jupiter in Libra (enemy sign of Venus) 4th from Moon -> no Gaja Kesari.
+    chart = make_chart(ascendant=200.0, Moon=10.0, Jupiter=190.0, Venus=185.0,
+                       Sun=250, Mars=280, Mercury=40, Saturn=310)
+    assert "Gaja Kesari Yoga" not in names(chart)
 
 
 def test_budha_aditya():
