@@ -1,0 +1,6 @@
+# Phase 1 — deterministic calculation engine dependencies.
+# Pinned conservatively; the engine relies only on stable pyswisseph APIs.
+
+pyswisseph>=2.10.0,<3.0   # Swiss Ephemeris bindings (astronomical core)
+tzdata>=2024.1            # IANA timezone database (Windows / minimal images)
+pytest>=8.0              # test harness for the golden charts
