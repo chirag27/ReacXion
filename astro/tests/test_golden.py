@@ -15,6 +15,7 @@ from engine.chart import compute_chart
 from engine.constants import PRESET_KP, PRESET_VEDIC
 from engine.dasha import balance_at_birth
 from engine.varga import divisional_chart
+from engine.ashtakavarga import sarvashtakavarga
 
 from tests.golden_charts import GOLDEN_CHARTS, ExpectedChart, GoldenChart
 
@@ -129,6 +130,18 @@ def test_dasha_balance_at_birth(golden: GoldenChart):
     )
     assert abs(years - expected_years) <= DASHA_YEAR_TOL, (
         f"[{golden.label}] balance {years:.4f}y vs expected {expected_years:.4f}y"
+    )
+
+
+@pytest.mark.parametrize("golden", GOLDEN_CHARTS, ids=lambda g: g.label)
+def test_sarvashtakavarga(golden: GoldenChart):
+    if golden.sarvashtakavarga is None:
+        pytest.skip(f"{golden.label}: SAV is TODO")
+    chart = compute_chart(golden.birth, *PRESET_VEDIC)
+    actual = sarvashtakavarga(chart)
+    assert sum(actual) == 337
+    assert actual == golden.sarvashtakavarga, (
+        f"[{golden.label}] SAV {actual} vs expected {golden.sarvashtakavarga}"
     )
 
 

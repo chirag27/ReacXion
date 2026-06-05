@@ -42,6 +42,16 @@ from .varga import (
 )
 from .aspects import PlanetAspect, aspects_between, graha_drishti
 from .dignity import DignityInfo, chart_dignities, planet_dignity
+from .houses import HouseChart, house_of
+from .bhava import BHAVA, Bhava, karakas, significations
+from .functional import (
+    FunctionalNature,
+    classify_chart,
+    functional_nature,
+    yogakarakas_for,
+)
+from .yogas import Yoga, detect_yogas
+from .ashtakavarga import bhinnashtakavarga, sarvashtakavarga, by_house
 
 __all__ = [
     "BirthData",
@@ -84,4 +94,23 @@ __all__ = [
     "DignityInfo",
     "planet_dignity",
     "chart_dignities",
+    # Phase 3 — houses & significations
+    "HouseChart",
+    "house_of",
+    "BHAVA",
+    "Bhava",
+    "karakas",
+    "significations",
+    # Phase 3 — functional nature
+    "FunctionalNature",
+    "functional_nature",
+    "classify_chart",
+    "yogakarakas_for",
+    # Phase 3 — yogas
+    "Yoga",
+    "detect_yogas",
+    # Phase 3 — ashtakavarga
+    "bhinnashtakavarga",
+    "sarvashtakavarga",
+    "by_house",
 ]

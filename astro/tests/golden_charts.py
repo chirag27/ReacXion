@@ -68,6 +68,10 @@ class GoldenChart:
     # Key divisional placements: {"D9": {"Sun": "Leo", ...}}.
     vargas: Optional[Dict[str, Dict[str, str]]] = None
 
+    # ---- Phase 3 expectations (Vedic / Lahiri chart) ----
+    # Sarvashtakavarga bindus by sign index (Aries..Pisces); sum must be 337.
+    sarvashtakavarga: Optional[List[int]] = None
+
 
 GOLDEN_CHARTS: List[GoldenChart] = [
     # 1) India, no DST, clean +5:30 offset — the simplest baseline.
@@ -121,6 +125,7 @@ GOLDEN_CHARTS: List[GoldenChart] = [
             "Mercury": "Capricorn", "Jupiter": "Capricorn", "Venus": "Aries",
             "Saturn": "Libra", "Rahu": "Leo", "Ketu": "Aquarius",
         }},
+        sarvashtakavarga=[29, 30, 30, 24, 27, 30, 31, 29, 32, 25, 21, 29],
     ),
 
     # 2) New York during Eastern Daylight Time — exercises a DST offset.
@@ -174,6 +179,7 @@ GOLDEN_CHARTS: List[GoldenChart] = [
             "Mercury": "Aquarius", "Jupiter": "Cancer", "Venus": "Taurus",
             "Saturn": "Gemini", "Rahu": "Libra", "Ketu": "Aries",
         }},
+        sarvashtakavarga=[33, 24, 30, 26, 24, 24, 28, 32, 27, 28, 23, 38],
     ),
 
     # 3) Pre-DB-era India via an EXPLICIT fixed offset — robustness for old
@@ -228,5 +234,6 @@ GOLDEN_CHARTS: List[GoldenChart] = [
             "Mercury": "Scorpio", "Jupiter": "Taurus", "Venus": "Capricorn",
             "Saturn": "Capricorn", "Rahu": "Aquarius", "Ketu": "Leo",
         }},
+        sarvashtakavarga=[30, 44, 19, 27, 27, 30, 24, 24, 28, 20, 28, 36],
     ),
 ]

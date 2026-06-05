@@ -2,9 +2,11 @@
 
 A deterministic astronomical calculation engine for Vedic, KP, and (later) Lal
 Kitab astrology, built phase by phase per [`BUILD_PLAN.md`](BUILD_PLAN.md).
-**Phases 1–2 are complete** (chart core + dasha/vargas/aspects/dignity); there
-is still no LLM interpretation layer — everything here is deterministic
-computation.
+**Phases 1–3 are complete** (chart core; dasha/vargas/aspects/dignity; codified
+yogas, functional nature, house significations, Ashtakavarga); there is still
+no LLM interpretation layer — everything here is deterministic computation, and
+the Phase-3 interpretation *rules* are codified in code/data (not a vector
+store) so every verdict is traceable to its triggering placements.
 
 ## The one rule: computation vs. interpretation
 
@@ -47,7 +49,12 @@ astro/
 │   ├── dasha.py            # [P2] Vimshottari Maha->Antar->Pratyantar->Sookshma
 │   ├── varga.py            # [P2] divisional charts (D1..D60), data-driven
 │   ├── aspects.py          # [P2] graha drishti (Parashari aspects)
-│   └── dignity.py          # [P2] exalt/debil/moolatrikona/own/friend/enemy
+│   ├── dignity.py          # [P2] exalt/debil/moolatrikona/own/friend/enemy
+│   ├── houses.py           # [P3] whole-sign bhava framework
+│   ├── bhava.py            # [P3] house significations + karakas (data)
+│   ├── functional.py       # [P3] functional benefic/malefic per lagna
+│   ├── yogas.py            # [P3] yoga detection (traceable to placements)
+│   └── ashtakavarga.py     # [P3] Bhinna + Sarva ashtakavarga
 ├── tests/
 │   ├── golden_charts.py    # 3 golden charts; expected values are TODO placeholders
 │   ├── test_birth_data.py  # timezone -> UTC (deterministic)
@@ -184,7 +191,39 @@ print(chart_dignities(chart)["Sun"].state)   # exalted/own/friend/...
   and natural (naisargika) friendship. Temporary friendship is a later
   refinement; nodes report `neutral`.
 
-## Validation status (Phases 1–2)
+## Phase 3 — codified interpretation rules
+
+Deterministic rules in code/data — **not** an LLM or vector store — with every
+result carrying the placements that triggered it.
+
+```python
+from engine import (compute_vedic_chart, detect_yogas, classify_chart,
+                    sarvashtakavarga, significations, karakas)
+
+chart = compute_vedic_chart(birth)
+
+for y in detect_yogas(chart):           # traceable yoga objects
+    print(y.name, y.planets, "→", y.description)
+    if y.cancellation:
+        print("   cancellation:", y.cancellation)
+
+print(classify_chart(chart)["Saturn"].nature)   # functional benefic/malefic/yogakaraka
+print(sarvashtakavarga(chart))                   # 12 bindu totals (sum 337)
+print(karakas(7), significations(7))             # 7th house karaka + meanings
+```
+
+- **Yogas**: Pancha Mahapurusha (Ruchaka/Bhadra/Hamsa/Malavya/Sasa), Gaja
+  Kesari, Budha-Aditya, Chandra-Mangala, Neecha Bhanga Raja Yoga (with the
+  cancellation that fired), Kemadruma, kendra-trikona Raja Yogas, and Dhana
+  Yogas. Each `Yoga` records `planets`, a `description`, the structured
+  `triggers`, and (where relevant) `cancellation`.
+- **Functional nature** per lagna via classical Parashari lordship logic
+  (yogakaraka / benefic / malefic / neutral), each verdict citing the houses
+  the planet rules.
+- **House significations** (`BHAVA`): karakas + life areas as queryable data.
+- **Ashtakavarga**: Bhinna + Sarva using JHora's benefic-point tables.
+
+## Validation status (Phases 1–3)
 
 The golden charts are **filled and asserted** (no skips). Values were
 cross-generated with **PyJHora** (`jhora` on PyPI — the Python port of Jagannatha
@@ -200,6 +239,7 @@ Results across all 3 charts × both ayanamsas:
 | KP sign/star/sub-lord | **exact** (0 mismatches over 27,693 samples) |
 | Vimshottari lords + balance | lords exact; balance within 0.001 yr |
 | D9 Navamsa | **exact** |
+| Sarvashtakavarga | **exact** (all 3 charts; benefic tables transcribed from JHora) |
 
 Two engine corrections came directly out of this validation: switching to
 **true geometric positions** (the ~20″ aberration fix) and defaulting the dasha
@@ -241,7 +281,9 @@ Filled values are asserted by `test_dasha_balance_at_birth` and
 
 ## Scope
 
-Phases 1–2 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
-divisional charts, graha drishti, and dignity — all deterministic. Phase 3
-(codified yogas/interpretation rules) onward, and the LLM interpretation layer,
-follow per `BUILD_PLAN.md`.
+Phases 1–3 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
+divisional charts, graha drishti, dignity, and the codified interpretation
+layer (yogas, functional nature, house significations, Ashtakavarga) — all
+deterministic. Phase 4 (KP judgment: significators, cuspal sub-lords, ruling
+planets, event judgment) onward, and the LLM interpretation layer, follow per
+`BUILD_PLAN.md`.
