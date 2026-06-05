@@ -54,7 +54,10 @@ astro/
 │   ├── bhava.py            # [P3] house significations + karakas (data)
 │   ├── functional.py       # [P3] functional benefic/malefic per lagna
 │   ├── yogas.py            # [P3] yoga detection (traceable to placements)
-│   └── ashtakavarga.py     # [P3] Bhinna + Sarva ashtakavarga
+│   ├── ashtakavarga.py     # [P3] Bhinna + Sarva ashtakavarga
+│   ├── kp.py               # [P4] KP significators (4-step), cuspal sub lords
+│   ├── kp_ruling.py        # [P4] ruling planets at a query moment
+│   └── kp_events.py        # [P4] event judgment, timing, birth-time sensitivity
 ├── tests/
 │   ├── golden_charts.py    # 3 golden charts; expected values are TODO placeholders
 │   ├── test_birth_data.py  # timezone -> UTC (deterministic)
@@ -223,7 +226,45 @@ print(karakas(7), significations(7))             # 7th house karaka + meanings
 - **House significations** (`BHAVA`): karakas + life areas as queryable data.
 - **Ashtakavarga**: Bhinna + Sarva using JHora's benefic-point tables.
 
-## Validation status (Phases 1–3)
+## Phase 4 — KP judgment layer
+
+Largely exact KP computation (KP ayanamsa + Placidus). House placement is
+**cuspal** (a planet is in the bhava whose Placidus cusp span contains it).
+
+```python
+from engine import (compute_kp_chart, KPAnalysis, judge_event,
+                    event_dasha_periods, ruling_planets, birth_time_sensitivity)
+
+kp = compute_kp_chart(birth)
+A = KPAnalysis.from_chart(kp)
+
+A.house_significators(7)          # ordered 4-step significators of the 7th
+j = judge_event(A, "marriage")    # CSL verdict + significators for 2/7/11
+print(j.cuspal_sub_lord, j.supports, j.verdict, j.final_significators)
+
+event_dasha_periods(birth, A, "marriage")   # Dasha-Bhukti timing windows
+ruling_planets(query_birthdata).ordered      # RP at a query moment
+birth_time_sensitivity(birth, minutes=2)     # KP confidence flag
+```
+
+- **Significators (4-step)**: planets in the star of occupants → occupants →
+  planets in the star of the owner → the owner; plus the reverse
+  (`planet_significations`) and the sub-lord-concurrence pruning
+  (`final_significators`).
+- **Cuspal Sub Lords**: per-cusp CSL with each event's supporting/negating
+  house groups (marriage 2/7/11, career 2/6/10/11, …).
+- **Ruling Planets**: day lord + Moon's and Lagna's sign/star/sub lords at the
+  query instant.
+- **Event judgment + timing**: the deciding cusp's sub-lord verdict, the
+  significators, and the Dasha-Bhukti windows where both lords signify the matter.
+- **Birth-time sensitivity**: re-casts ±N minutes and flags any cuspal sub lord
+  that shifts — a direct KP confidence signal.
+
+The KP sub-lords, cusps, and star-lords underpinning all of this are validated
+exactly against JHora (above); the 4-step assembly is covered by deterministic
+unit tests (PyJHora has no significator function to diff against).
+
+## Validation status (Phases 1–4)
 
 The golden charts are **filled and asserted** (no skips). Values were
 cross-generated with **PyJHora** (`jhora` on PyPI — the Python port of Jagannatha
@@ -292,9 +333,10 @@ Filled values are asserted by `test_dasha_balance_at_birth` and
 
 ## Scope
 
-Phases 1–3 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
-divisional charts, graha drishti, dignity, and the codified interpretation
-layer (yogas, functional nature, house significations, Ashtakavarga) — all
-deterministic. Phase 4 (KP judgment: significators, cuspal sub-lords, ruling
-planets, event judgment) onward, and the LLM interpretation layer, follow per
-`BUILD_PLAN.md`.
+Phases 1–4 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
+divisional charts, graha drishti, dignity, the codified Vedic interpretation
+layer (yogas, functional nature, house significations, Ashtakavarga), and the
+KP judgment layer (4-step significators, cuspal sub-lords, ruling planets, event
+judgment with Dasha-Bhukti timing, and a birth-time sensitivity flag) — all
+deterministic. Phase 5 (Lal Kitab — a separate paradigm) onward, and the LLM
+interpretation layer, follow per `BUILD_PLAN.md`.

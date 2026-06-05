@@ -52,6 +52,17 @@ from .functional import (
 )
 from .yogas import Yoga, detect_yogas
 from .ashtakavarga import bhinnashtakavarga, sarvashtakavarga, by_house
+from .kp import KPAnalysis, Significator, kp_house_of
+from .kp_ruling import RulingPlanets, ruling_planets
+from .kp_events import (
+    EVENTS,
+    EventJudgment,
+    EventRule,
+    SensitivityReport,
+    birth_time_sensitivity,
+    event_dasha_periods,
+    judge_event,
+)
 
 __all__ = [
     "BirthData",
@@ -113,4 +124,17 @@ __all__ = [
     "bhinnashtakavarga",
     "sarvashtakavarga",
     "by_house",
+    # Phase 4 — KP judgment
+    "KPAnalysis",
+    "Significator",
+    "kp_house_of",
+    "RulingPlanets",
+    "ruling_planets",
+    "EVENTS",
+    "EventRule",
+    "EventJudgment",
+    "judge_event",
+    "event_dasha_periods",
+    "SensitivityReport",
+    "birth_time_sensitivity",
 ]
