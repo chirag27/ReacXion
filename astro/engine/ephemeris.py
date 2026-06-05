@@ -65,9 +65,25 @@ def set_ephemeris_path(path: str) -> None:
 
 
 def _base_flags() -> int:
-    """Sidereal, with speed; Swiss if data files are present, else Moshier."""
+    """Flags matching Jagannatha Hora's convention.
+
+    Sidereal, with speed, and crucially **true geometric** positions:
+    ``FLG_TRUEPOS | FLG_NOABERR | FLG_NOGDEFL`` disable light-time, annual
+    aberration, and gravitational light-deflection. Vedic software (JHora, and
+    the PyJHora port it is validated against) reports true positions, not the
+    apparent positions that are swisseph's default — the difference is the
+    ~20 arcsecond aberration term on the Sun. Swiss ephemeris is used if data
+    files are registered, otherwise the built-in Moshier model.
+    """
     eph = swe.FLG_SWIEPH if _EPHE_PATH_SET else swe.FLG_MOSEPH
-    return eph | swe.FLG_SIDEREAL | swe.FLG_SPEED
+    return (
+        eph
+        | swe.FLG_SIDEREAL
+        | swe.FLG_SPEED
+        | swe.FLG_TRUEPOS
+        | swe.FLG_NOABERR
+        | swe.FLG_NOGDEFL
+    )
 
 
 def _set_ayanamsa(ayanamsa: str) -> None:

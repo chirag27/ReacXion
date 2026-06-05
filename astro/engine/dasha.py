@@ -10,10 +10,10 @@ parent's lord and proceeding in Vimshottari order.
 Pure arithmetic on top of :mod:`engine.nakshatra`; no ephemeris dependency.
 
 **Year length is the key tuning knob.** Different references use slightly
-different "year" definitions for dasha (Julian 365.25, Gregorian 365.2425, or a
-360-day savana year), which shifts long-range dates by days. The default here
-is the Julian year (365.25 days); pass ``year_length_days`` to match your
-reference tool (e.g. Jagannatha Hora) exactly.
+different "year" definitions for dasha (sidereal 365.2564, Julian 365.25,
+Gregorian 365.2425, or a 360-day savana year), which shifts long-range dates by
+days. The default here is the **sidereal year** (365.256364 days), matching
+Jagannatha Hora; pass ``year_length_days`` to use another convention.
 """
 
 from __future__ import annotations
@@ -30,8 +30,12 @@ from .constants import (
 )
 from .nakshatra import nakshatra_of, normalize
 
-# Default Vimshottari year length. Override to match a reference implementation.
-DEFAULT_YEAR_DAYS = 365.25
+# Default Vimshottari year length: the sidereal solar year, which is Jagannatha
+# Hora's default (and the PyJHora port's `sidereal_year`). Override to use a
+# Julian year (365.25), Gregorian (365.2425), or a 360-day savana year.
+DEFAULT_YEAR_DAYS = 365.256364
+SIDEREAL_YEAR_DAYS = 365.256364
+JULIAN_YEAR_DAYS = 365.25
 
 LEVEL_NAMES = {1: "Mahadasha", 2: "Antardasha", 3: "Pratyantardasha", 4: "Sookshma"}
 

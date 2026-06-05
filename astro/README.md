@@ -73,6 +73,10 @@ pytest -q          # run from inside astro/
 
 The engine runs on the built-in **Moshier** ephemeris with no data files
 (accurate to within an arcminute). For maximum precision see `data/README.md`.
+Positions are computed as **true geometric** longitudes (`FLG_TRUEPOS |
+FLG_NOABERR | FLG_NOGDEFL`) to match Jagannatha Hora's convention — not the
+apparent positions that are swisseph's default (the difference is the ~20″
+annual-aberration term on the Sun).
 
 ## Usage
 
@@ -165,9 +169,10 @@ print(chart_dignities(chart)["Sun"].state)   # exalted/own/friend/...
 ```
 
 - **Dasha** is computed from the Moon's nakshatra longitude with exact UTC
-  start/end datetimes. The **year length** (`year_length_days`, default Julian
-  365.25) is the key knob for matching a reference tool's long-range dates; the
-  *balance-at-birth in years* is year-length-independent.
+  start/end datetimes. The **year length** (`year_length_days`, default the
+  **sidereal year** 365.256364 — JHora's default) is the key knob for matching
+  a reference tool's long-range dates; the *balance-at-birth in years* is
+  year-length-independent.
 - **Vargas** are **data-driven**: each chart is one entry in `engine.varga.VARGAS`
   with a `(sign, part) -> sign` rule (or a special handler for the unequal D30
   Trimsamsa). Rules follow standard BPHS; several vargas have competing
@@ -179,7 +184,35 @@ print(chart_dignities(chart)["Sun"].state)   # exalted/own/friend/...
   and natural (naisargika) friendship. Temporary friendship is a later
   refinement; nodes report `neutral`.
 
-## Validation workflow
+## Validation status (Phases 1–2)
+
+The golden charts are **filled and asserted** (no skips). Values were
+cross-generated with **PyJHora** (`jhora` on PyPI — the Python port of Jagannatha
+Hora), configured identically (Lahiri/KP ayanamsa, mean nodes, true positions).
+Results across all 3 charts × both ayanamsas:
+
+| Quantity | Agreement vs PyJHora |
+|---|---|
+| 9 planet longitudes | **< 0.3″** (0.005′) |
+| Ascendant | **< 12″** (≤ 0.2′; from `utc_to_jd` vs plain `julday`) |
+| Placidus / whole-sign cusps | within the arcminute |
+| Nakshatra + pada | **exact** (0 mismatches over a full sweep) |
+| KP sign/star/sub-lord | **exact** (0 mismatches over 27,693 samples) |
+| Vimshottari lords + balance | lords exact; balance within 0.001 yr |
+| D9 Navamsa | **exact** |
+
+Two engine corrections came directly out of this validation: switching to
+**true geometric positions** (the ~20″ aberration fix) and defaulting the dasha
+year to the **sidereal year**.
+
+**Still requiring confirmation in the JHora GUI:** the convention-dependent
+divisional charts (D2, D3, D4, D10, D12, D24, D30, D40, D45, D60). This engine
+uses classical Parashari rules; PyJHora's helper uses a uniform cyclic rule, so
+they diverge. D9 and the cyclic-equivalent vargas (D7, D16, D20, D27) match
+both. Check your JHora "varga calculation method" and tell the engine which
+convention to use — each rule is a one-line entry in `engine.varga.VARGAS`.
+
+## Re-validating / extending the golden set
 
 The three golden charts in `tests/golden_charts.py` ship with expected values
 left as `None` (TODO). To validate:
