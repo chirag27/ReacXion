@@ -63,6 +63,14 @@ from .kp_events import (
     event_dasha_periods,
     judge_event,
 )
+from .lalkitab import (
+    PAKKA_GHAR,
+    LalKitabChart,
+    PlanetState,
+    lal_kitab_house,
+)
+from .lalkitab_debts import Rina, detect_rinas, rina_report
+from .lalkitab_remedies import Remedy, remedies_for
 
 __all__ = [
     "BirthData",
@@ -137,4 +145,14 @@ __all__ = [
     "event_dasha_periods",
     "SensitivityReport",
     "birth_time_sensitivity",
+    # Phase 5 — Lal Kitab
+    "LalKitabChart",
+    "PlanetState",
+    "PAKKA_GHAR",
+    "lal_kitab_house",
+    "Rina",
+    "detect_rinas",
+    "rina_report",
+    "Remedy",
+    "remedies_for",
 ]

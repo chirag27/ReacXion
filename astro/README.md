@@ -57,7 +57,10 @@ astro/
 │   ├── ashtakavarga.py     # [P3] Bhinna + Sarva ashtakavarga
 │   ├── kp.py               # [P4] KP significators (4-step), cuspal sub lords
 │   ├── kp_ruling.py        # [P4] ruling planets at a query moment
-│   └── kp_events.py        # [P4] event judgment, timing, birth-time sensitivity
+│   ├── kp_events.py        # [P4] event judgment, timing, birth-time sensitivity
+│   ├── lalkitab.py         # [P5] Lal Kitab chart, pakka ghar, states (1941)
+│   ├── lalkitab_debts.py   # [P5] rinas (ancestral debts)
+│   └── lalkitab_remedies.py # [P5] remedies (totkay) engine
 ├── tests/
 │   ├── golden_charts.py    # 3 golden charts; expected values are TODO placeholders
 │   ├── test_birth_data.py  # timezone -> UTC (deterministic)
@@ -264,7 +267,39 @@ The KP sub-lords, cusps, and star-lords underpinning all of this are validated
 exactly against JHora (above); the 4-step assembly is covered by deterministic
 unit tests (PyJHora has no significator function to diff against).
 
-## Validation status (Phases 1–4)
+## Phase 5 — Lal Kitab (separate paradigm, 1941 edition)
+
+A self-contained module that does **not** reuse the Parashari layer. It uses the
+classic Lal Kitab grid where houses are fixed to signs (**Aries = 1st khana**),
+so a planet's house is its sign number.
+
+```python
+from engine import (compute_vedic_chart, LalKitabChart, detect_rinas, remedies_for)
+
+lk = LalKitabChart.from_chart(compute_vedic_chart(birth))
+lk.states["Saturn"]              # house, in_pakka_ghar, awakened/asleep/blind
+lk.planets_in_pakka_ghar()
+detect_rinas(lk)                 # ancestral debts with the triggering placement
+remedies_for(lk)                 # totkay keyed to rinas + afflicted planets
+```
+
+- **Chart + pakka ghar**: fixed-grid placement and each graha's permanent house.
+- **States**: `in_pakka_ghar`, and `awakened` (has company) / `asleep` (alone but
+  aspected) / `blind` (alone and unaspected), using Lal Kitab drishti.
+- **Rinas**: Pitra, Matri, Stri, Bahin-Beti, Santan, Atma — each citing the
+  placement that triggered it.
+- **Remedies**: canonical per-planet and per-rina upay, keyed to afflictions.
+
+> **Edition disclaimer.** This encodes the **Lal Kitab 1941 edition** as commonly
+> reproduced. Lal Kitab has several conflicting editions (1939–1952) and even
+> 1941 tables are transcribed differently across sources; there is no software
+> "gold standard" to diff against (unlike JHora for the Vedic/KP layers). All
+> edition-specific values (pakka ghar, rina conditions, remedy texts) live in
+> plain, audit-friendly tables in `engine/lalkitab*.py` — **verify them against a
+> physical copy before relying on them.** The detection *logic* is unit-tested;
+> the *data* is the part to double-check.
+
+## Validation status (Phases 1–4 against JHora)
 
 The golden charts are **filled and asserted** (no skips). Values were
 cross-generated with **PyJHora** (`jhora` on PyPI — the Python port of Jagannatha
@@ -333,10 +368,12 @@ Filled values are asserted by `test_dasha_balance_at_birth` and
 
 ## Scope
 
-Phases 1–4 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
+Phases 1–5 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
 divisional charts, graha drishti, dignity, the codified Vedic interpretation
-layer (yogas, functional nature, house significations, Ashtakavarga), and the
-KP judgment layer (4-step significators, cuspal sub-lords, ruling planets, event
-judgment with Dasha-Bhukti timing, and a birth-time sensitivity flag) — all
-deterministic. Phase 5 (Lal Kitab — a separate paradigm) onward, and the LLM
-interpretation layer, follow per `BUILD_PLAN.md`.
+layer (yogas, functional nature, house significations, Ashtakavarga), the KP
+judgment layer (4-step significators, cuspal sub-lords, ruling planets, event
+judgment with Dasha-Bhukti timing, birth-time sensitivity), and the Lal Kitab
+module (fixed-grid chart, pakka ghar, planetary states, rinas, remedies — 1941
+edition) — all deterministic. Phase 6 (the knowledge layer: a clean query API
+over the codified rules plus RAG over public-domain prose) onward, and the LLM
+orchestration, follow per `BUILD_PLAN.md`.
