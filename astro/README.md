@@ -1,12 +1,13 @@
 # Astrology Engine — Phase 1 (Calculation Core)
 
-A deterministic astronomical calculation engine for Vedic, KP, and (later) Lal
-Kitab astrology, built phase by phase per [`BUILD_PLAN.md`](BUILD_PLAN.md).
-**Phases 1–3 are complete** (chart core; dasha/vargas/aspects/dignity; codified
-yogas, functional nature, house significations, Ashtakavarga); there is still
-no LLM interpretation layer — everything here is deterministic computation, and
-the Phase-3 interpretation *rules* are codified in code/data (not a vector
-store) so every verdict is traceable to its triggering placements.
+A multi-system astrology agent (Vedic, KP, Lal Kitab) for Python, built phase by
+phase per [`BUILD_PLAN.md`](BUILD_PLAN.md). **All eight phases are complete:** a
+deterministic calculation + interpretation engine, a tool-calling agent over it
+(Claude), a FastAPI backend, and an Android app. The governing rule holds
+throughout — all astronomical computation is deterministic and lives in the
+engine; the LLM only interprets and may never invent a position, dasha,
+sub-lord, or cusp. Every interpretation rule is codified in code/data (not a
+vector store), so each verdict is traceable to its triggering placements.
 
 ## The one rule: computation vs. interpretation
 
@@ -66,11 +67,17 @@ astro/
 │   │   ├── embeddings.py   #      hashing (default) / local BGE / Voyage
 │   │   ├── store.py        #      Chroma store, one collection per system
 │   │   └── corpus.py       #      chunking + ingest + search_texts(query, system)
+│   ├── rectify.py          # [P8] birth-time confidence + KP rectification
 │   └── agent/              # [P7] tool-calling agent (hand-rolled loop)
 │       ├── tools.py        #      engine tools; birth bound server-side
 │       ├── prompt.py       #      system prompt (the grounding guardrail)
 │       ├── llm.py          #      provider-neutral LLM interface (Claude default)
+│       ├── evals.py        #      [P8] interpretation-quality eval harness
 │       └── agent.py        #      the loop: classify -> ground -> retrieve -> synthesize
+├── service/                # [P8] FastAPI backend (engine + agent over HTTP)
+│   ├── app.py              #      endpoints incl. /report and /ask
+│   └── models.py           #      request models
+├── android/                # [P8] Jetpack Compose app (build in Android Studio)
 ├── tests/
 │   ├── golden_charts.py    # 3 golden charts; expected values are TODO placeholders
 │   ├── test_birth_data.py  # timezone -> UTC (deterministic)
@@ -386,6 +393,40 @@ print(result.grounded_tools())           # every tool the answer was grounded in
   whole loop is tested with a scripted fake — no API key, no network. Live calls
   use the Anthropic SDK; adaptive thinking is on, thinking blocks round-trip.
 
+## Phase 8 — backend, app, and productionizing
+
+**FastAPI backend** (`service/app.py`) exposes the engine + agent over HTTP so a
+client (e.g. the Android app) can be the UI while the engine runs server-side:
+
+```bash
+pip install -r requirements.txt
+export ANTHROPIC_API_KEY=sk-ant-...      # only needed for /ask
+uvicorn service.app:app --host 0.0.0.0 --port 8000
+```
+
+Endpoints: `/report` (one call returns the full reading bundle), `/chart`,
+`/dasha`, `/kp/judge`, `/lalkitab`, `/remedies`, `/confidence`, `/sensitivity`,
+`/ask` (the agent), and `/health`. Calculation endpoints need no API key; `/ask`
+returns 503 if `ANTHROPIC_API_KEY` is unset.
+
+**Android app** (`android/`) — a Jetpack Compose front-end that renders the
+chart, current dasha, yogas, Lal Kitab debts/remedies, a birth-time confidence
+indicator, and agent answers. Open it in Android Studio and point its backend
+URL at the server (`http://10.0.2.2:8000` from the emulator, your PC's LAN IP
+from a device). See `android/README.md`. (It is source-only here — authored
+without the Android SDK, so it has not been compiled to an APK.)
+
+**Productionizing:**
+
+- **Regression suite** — the golden charts + structural invariant tests run on
+  every change (calculation correctness is ~80% of credibility).
+- **Interpretation-quality evals** (`engine.agent.evals`) — a grounding eval set
+  that asserts each topic question triggers the relevant tools; runs against the
+  real Claude client (live quality gate) or a scripted fake (offline CI).
+- **Birth-time rectification / confidence** (`engine.rectify`) — measures the KP
+  cuspal-stability span around the recorded time, turns it into a high/medium/low
+  confidence, and suggests the most robust time for an uncertain birth time.
+
 ## Validation status (Phases 1–4 against JHora)
 
 The golden charts are **filled and asserted** (no skips). Values were
@@ -455,16 +496,20 @@ Filled values are asserted by `test_dasha_balance_at_birth` and
 
 ## Scope
 
-Phases 1–7 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
-divisional charts, graha drishti, dignity, the codified Vedic interpretation
-layer (yogas, functional nature, house significations, Ashtakavarga), the KP
-judgment layer (4-step significators, cuspal sub-lords, ruling planets, event
-judgment with Dasha-Bhukti timing, birth-time sensitivity), the Lal Kitab module
-(fixed-grid chart, pakka ghar, planetary states, rinas, remedies — 1941
-edition), the knowledge layer (a serializable query API over the codified rules
-plus a scoped RAG retriever), and the tool-calling agent (hand-rolled loop over
-the engine with the never-invent-a-position guardrail). The engine is
-deterministic about facts; the agent only interprets. Phase 8 (regression
-golden suite, interpretation-quality evals, birth-time rectification, and a web
-frontend that renders the chart, dasha timeline, and structured reading)
-follows per `BUILD_PLAN.md`.
+**All eight phases of `BUILD_PLAN.md` are complete:** chart core, KP 249
+sub-lords, Vimshottari dasha, divisional charts, graha drishti, dignity, the
+codified Vedic interpretation layer (yogas, functional nature, house
+significations, Ashtakavarga), the KP judgment layer (4-step significators,
+cuspal sub-lords, ruling planets, event judgment with Dasha-Bhukti timing,
+birth-time sensitivity), the Lal Kitab module (fixed-grid chart, pakka ghar,
+planetary states, rinas, remedies — 1941 edition), the knowledge layer
+(serializable query API + scoped RAG), the tool-calling agent (hand-rolled loop
+with the never-invent-a-position guardrail), and the productionizing layer
+(FastAPI backend, Android Compose app, regression + interpretation evals, and
+birth-time rectification). The engine is deterministic about facts; the agent
+only interprets, grounding every claim in a tool call.
+
+Outstanding validation work (engineering complete, data to confirm): drop your
+own Jagannatha Hora GUI numbers into `tests/golden_charts.py` for the final
+gold-standard pass, and cross-check the convention-dependent vargas and the Lal
+Kitab 1941 tables against your reference sources.

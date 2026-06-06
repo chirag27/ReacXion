@@ -11,6 +11,11 @@ chromadb>=1.0            # vector store for interpretive prose
 # Phase 7 — the tool-calling agent (live LLM calls only; tests use a fake)
 anthropic>=0.40          # Claude SDK; agent defaults to claude-opus-4-8
 
+# Phase 8 — HTTP backend for the Android app
+fastapi>=0.110           # REST service exposing the engine + agent
+uvicorn>=0.29            # ASGI server: uvicorn service.app:app --port 8000
+httpx>=0.27              # used by FastAPI's TestClient (tests)
+
 # Optional embedding backends (the engine defaults to a built-in hashing
 # embedder, so these are NOT required to run):
 #   pip install "sentence-transformers"   # local BGE embeddings (private, offline)
