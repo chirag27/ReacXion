@@ -16,11 +16,29 @@ android {
         versionName = "1.0"
     }
 
+    // Release signing is driven by CI secrets (see android/README.md). When no
+    // keystore is configured the release config stays empty and the release
+    // build is simply skipped — debug still builds with the standard debug key.
+    signingConfigs {
+        create("release") {
+            val ksPath = System.getenv("ANDROID_KEYSTORE_FILE")
+            if (!ksPath.isNullOrBlank() && file(ksPath).exists()) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
                           "proguard-rules.pro")
+            val ksPath = System.getenv("ANDROID_KEYSTORE_FILE")
+            signingConfig = if (!ksPath.isNullOrBlank() && file(ksPath).exists())
+                signingConfigs.getByName("release") else null
         }
     }
 

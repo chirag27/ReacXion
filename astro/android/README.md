@@ -47,6 +47,50 @@ production deployment).
 | Ask the agent | `POST /ask` (tool-calling agent; needs `ANTHROPIC_API_KEY`) |
 | (startup, optional) | `GET /health` |
 
+## Get the APK from GitHub (no Android Studio needed)
+
+CI builds the APK on every push and **publishes it to a GitHub Release** with a
+stable, non-expiring link:
+
+- **Latest build:** repo → **Releases** → **Jyotish Consult — latest build**
+  (tag `android-latest`) → download `app-debug.apk`.
+  Direct: `https://github.com/chirag27/ReacXion/releases/download/android-latest/app-debug.apk`
+- **Versioned release:** push a tag like `android-v1.0` to cut a permanent
+  release with the same assets.
+
+The build also uploads the APK(s) as a workflow **artifact** (expires after 90
+days) — use the Release link for the durable one.
+
+## Signed release APK (your keystore)
+
+The debug APK is fine for sideloading. For a **signed release** APK (required to
+publish on Play, and for stable update signing), configure these as GitHub
+**repository secrets** (Settings → Secrets and variables → Actions):
+
+| Secret | What it is |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | your keystore file, base64-encoded |
+| `ANDROID_KEYSTORE_PASSWORD` | keystore (store) password |
+| `ANDROID_KEY_ALIAS` | key alias |
+| `ANDROID_KEY_PASSWORD` | key password |
+
+Generate a keystore once and keep it safe (losing it means you can't ship app
+updates under the same identity):
+
+```bash
+keytool -genkeypair -v -keystore release.keystore \
+  -alias jyotish -keyalg RSA -keysize 2048 -validity 10000
+
+# base64 for the secret (Linux):  base64 -w0 release.keystore
+# (macOS):                        base64 -i release.keystore | tr -d '\n'
+```
+
+Add the four secrets, then re-run the **Build Android APK** workflow. When the
+secrets are present, CI builds `app-release.apk` (signed) and attaches it to the
+Release alongside the debug APK; when they're absent, only the debug APK is
+built and published. Nothing secret is committed to the repo — the keystore
+lives only in your encrypted GitHub secrets and the ephemeral runner.
+
 ## Stack
 
 Kotlin · Jetpack Compose (Material 3) · Retrofit + kotlinx.serialization ·
