@@ -4,3 +4,11 @@
 pyswisseph>=2.10.0,<3.0   # Swiss Ephemeris bindings (astronomical core)
 tzdata>=2024.1            # IANA timezone database (Windows / minimal images)
 pytest>=8.0              # test harness for the golden charts
+
+# Phase 6 — knowledge layer (RAG)
+chromadb>=1.0            # vector store for interpretive prose
+
+# Optional embedding backends (the engine defaults to a built-in hashing
+# embedder, so these are NOT required to run):
+#   pip install "sentence-transformers"   # local BGE embeddings (private, offline)
+#   pip install "voyageai"                # Voyage AI embeddings (set VOYAGE_API_KEY)

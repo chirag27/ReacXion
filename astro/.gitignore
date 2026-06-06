@@ -23,6 +23,10 @@ data/ephe/*.se1
 data/ephe/*.se2
 !data/ephe/.gitkeep
 
+# Chroma vector-store persistence (rebuilt by ingesting data/corpus/)
+data/chroma/
+chroma.sqlite3
+
 # Editor / OS noise
 .idea/
 .vscode/

@@ -60,7 +60,12 @@ astro/
 │   ├── kp_events.py        # [P4] event judgment, timing, birth-time sensitivity
 │   ├── lalkitab.py         # [P5] Lal Kitab chart, pakka ghar, states (1941)
 │   ├── lalkitab_debts.py   # [P5] rinas (ancestral debts)
-│   └── lalkitab_remedies.py # [P5] remedies (totkay) engine
+│   ├── lalkitab_remedies.py # [P5] remedies (totkay) engine
+│   ├── knowledge.py        # [P6] codified-rules query API (serializable)
+│   └── rag/                # [P6] RAG: embeddings + Chroma store + retriever
+│       ├── embeddings.py   #      hashing (default) / local BGE / Voyage
+│       ├── store.py        #      Chroma store, one collection per system
+│       └── corpus.py       #      chunking + ingest + search_texts(query, system)
 ├── tests/
 │   ├── golden_charts.py    # 3 golden charts; expected values are TODO placeholders
 │   ├── test_birth_data.py  # timezone -> UTC (deterministic)
@@ -72,7 +77,8 @@ astro/
 │   ├── test_dignity.py     # [P2] dignity classification
 │   └── test_golden.py      # arcminute match vs JHora (skips until filled)
 └── data/
-    └── ephe/               # optional Swiss *.se1 files (git-ignored)
+    ├── ephe/               # optional Swiss *.se1 files (git-ignored)
+    └── corpus/             # [P6] RAG source prose + sources.md (provenance)
 ```
 
 ## Install & run
@@ -299,6 +305,50 @@ remedies_for(lk)                 # totkay keyed to rinas + afflicted planets
 > physical copy before relying on them.** The detection *logic* is unit-tested;
 > the *data* is the part to double-check.
 
+## Phase 6 — knowledge layer (codified rules + RAG)
+
+Two halves, both deterministic about *facts*:
+
+**1. Codified-rules query API** (`engine.knowledge`) exposes Phases 3–5 as
+JSON-serializable results the agent calls as tools (names mirror the planned
+Phase-7 tools):
+
+```python
+from engine import knowledge
+
+knowledge.compute_chart_facts(birth, "kp")   # planets, cusps, sub-lords (facts)
+knowledge.get_yogas(birth)                    # codified yogas with triggers
+knowledge.judge_event_kp(birth, "marriage")  # CSL verdict + significators + timing
+knowledge.get_remedies(birth)                 # Lal Kitab remedies
+knowledge.get_vimshottari_dasha(birth, 2)     # nested Maha/Antar with ISO dates
+```
+
+**2. RAG for interpretive prose** (`engine.rag`) — a Chroma vector store with a
+`search_texts(query, system)` retriever scoped per system:
+
+```python
+from engine.rag import TextStore, ingest_corpus, search_texts, get_embedder
+
+store = TextStore(path="data/chroma", embedder=get_embedder("hashing"))
+ingest_corpus(store)                          # indexes data/corpus/<system>/*.md
+search_texts(store, "when will marriage happen", "kp", k=3)
+```
+
+- **Embeddings are pluggable** and tuned for a *consultation* product: the
+  default `hashing` backend is deterministic and dependency-free (CI/offline);
+  `local` (sentence-transformers `BAAI/bge-small-en-v1.5`) is the recommended
+  production default — strong quality, fully **offline and private**, so client
+  birth data never leaves the machine and there's no per-query cost; `voyage`
+  (Voyage AI, Anthropic-recommended) is the opt-in for maximum quality. The two
+  optional backends import lazily — nothing extra is required to run.
+- **Retrieval is scoped per system** so Vedic prose never bleeds into a KP
+  answer, and the corpus supplies only *prose* — never a longitude, dasha,
+  sub-lord, or cusp (those always come from the deterministic engine).
+- **Copyright is enforced by policy**: the shipped corpus is only original rule
+  summaries written for this project, and `data/corpus/sources.md` records the
+  provenance of every ingested document. Do not ingest scraped or copyrighted
+  text.
+
 ## Validation status (Phases 1–4 against JHora)
 
 The golden charts are **filled and asserted** (no skips). Values were
@@ -368,12 +418,15 @@ Filled values are asserted by `test_dasha_balance_at_birth` and
 
 ## Scope
 
-Phases 1–5 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
+Phases 1–6 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
 divisional charts, graha drishti, dignity, the codified Vedic interpretation
 layer (yogas, functional nature, house significations, Ashtakavarga), the KP
 judgment layer (4-step significators, cuspal sub-lords, ruling planets, event
-judgment with Dasha-Bhukti timing, birth-time sensitivity), and the Lal Kitab
-module (fixed-grid chart, pakka ghar, planetary states, rinas, remedies — 1941
-edition) — all deterministic. Phase 6 (the knowledge layer: a clean query API
-over the codified rules plus RAG over public-domain prose) onward, and the LLM
-orchestration, follow per `BUILD_PLAN.md`.
+judgment with Dasha-Bhukti timing, birth-time sensitivity), the Lal Kitab module
+(fixed-grid chart, pakka ghar, planetary states, rinas, remedies — 1941
+edition), and the knowledge layer (a serializable query API over the codified
+rules plus a scoped RAG retriever over an original-prose corpus). All
+deterministic about facts. Phase 7 (the tool-calling agent — with the guardrail
+that the model may never state a position, dasha, sub-lord, or cusp that did not
+come from a tool call) and Phase 8 (validation, reports, frontend) follow per
+`BUILD_PLAN.md`.

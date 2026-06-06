@@ -71,6 +71,8 @@ from .lalkitab import (
 )
 from .lalkitab_debts import Rina, detect_rinas, rina_report
 from .lalkitab_remedies import Remedy, remedies_for
+from . import knowledge  # Phase 6 — codified-rules query API
+from . import rag        # Phase 6 — RAG (embeddings + Chroma + retriever)
 
 __all__ = [
     "BirthData",
@@ -155,4 +157,7 @@ __all__ = [
     "rina_report",
     "Remedy",
     "remedies_for",
+    # Phase 6 — knowledge layer
+    "knowledge",
+    "rag",
 ]
