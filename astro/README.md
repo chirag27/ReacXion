@@ -62,10 +62,15 @@ astro/
 │   ├── lalkitab_debts.py   # [P5] rinas (ancestral debts)
 │   ├── lalkitab_remedies.py # [P5] remedies (totkay) engine
 │   ├── knowledge.py        # [P6] codified-rules query API (serializable)
-│   └── rag/                # [P6] RAG: embeddings + Chroma store + retriever
-│       ├── embeddings.py   #      hashing (default) / local BGE / Voyage
-│       ├── store.py        #      Chroma store, one collection per system
-│       └── corpus.py       #      chunking + ingest + search_texts(query, system)
+│   ├── rag/                # [P6] RAG: embeddings + Chroma store + retriever
+│   │   ├── embeddings.py   #      hashing (default) / local BGE / Voyage
+│   │   ├── store.py        #      Chroma store, one collection per system
+│   │   └── corpus.py       #      chunking + ingest + search_texts(query, system)
+│   └── agent/              # [P7] tool-calling agent (hand-rolled loop)
+│       ├── tools.py        #      engine tools; birth bound server-side
+│       ├── prompt.py       #      system prompt (the grounding guardrail)
+│       ├── llm.py          #      provider-neutral LLM interface (Claude default)
+│       └── agent.py        #      the loop: classify -> ground -> retrieve -> synthesize
 ├── tests/
 │   ├── golden_charts.py    # 3 golden charts; expected values are TODO placeholders
 │   ├── test_birth_data.py  # timezone -> UTC (deterministic)
@@ -349,6 +354,38 @@ search_texts(store, "when will marriage happen", "kp", k=3)
   provenance of every ingested document. Do not ingest scraped or copyrighted
   text.
 
+## Phase 7 — the tool-calling agent
+
+A hand-rolled tool-calling loop (no framework) over the deterministic engine,
+driven by **Claude** (`claude-opus-4-8` by default). The engine is exposed as
+tools (`compute_chart`, `get_yogas`, `get_vimshottari_dasha`, `dasha_at`,
+`get_divisional_chart`, `get_kp_significators`, `get_cuspal_sublords`,
+`get_ruling_planets`, `judge_event_kp`, `get_lal_kitab_chart`, `get_remedies`,
+`search_texts`, …). The loop classifies the question, calls calculation tools to
+ground every positional claim, retrieves interpretive prose, then synthesizes —
+presenting systems **separately then synthesizing**.
+
+```python
+from engine import BirthData
+from engine.agent import AstrologyAgent
+
+agent = AstrologyAgent(birth)            # uses Claude; needs ANTHROPIC_API_KEY
+result = agent.ask("When am I likely to marry?")
+print(result.answer)
+print(result.grounded_tools())           # every tool the answer was grounded in
+```
+
+- **The guardrail (the most important line in the project):** the model may
+  **never** state a position, dasha, sub-lord, cusp, yoga, significator, or
+  remedy that did not come from a tool call. Birth data is bound **server-side**
+  in the toolkit — the model only chooses *which* tool to call, never the
+  positions — so it cannot invent or alter birth facts.
+- **Fully auditable:** every `AgentResult` records the exact tool calls and
+  outputs that grounded the reading.
+- **Offline-testable:** the LLM is behind a provider-neutral interface, so the
+  whole loop is tested with a scripted fake — no API key, no network. Live calls
+  use the Anthropic SDK; adaptive thinking is on, thinking blocks round-trip.
+
 ## Validation status (Phases 1–4 against JHora)
 
 The golden charts are **filled and asserted** (no skips). Values were
@@ -418,15 +455,16 @@ Filled values are asserted by `test_dasha_balance_at_birth` and
 
 ## Scope
 
-Phases 1–6 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
+Phases 1–7 are complete: chart core, KP 249 sub-lords, Vimshottari dasha,
 divisional charts, graha drishti, dignity, the codified Vedic interpretation
 layer (yogas, functional nature, house significations, Ashtakavarga), the KP
 judgment layer (4-step significators, cuspal sub-lords, ruling planets, event
 judgment with Dasha-Bhukti timing, birth-time sensitivity), the Lal Kitab module
 (fixed-grid chart, pakka ghar, planetary states, rinas, remedies — 1941
-edition), and the knowledge layer (a serializable query API over the codified
-rules plus a scoped RAG retriever over an original-prose corpus). All
-deterministic about facts. Phase 7 (the tool-calling agent — with the guardrail
-that the model may never state a position, dasha, sub-lord, or cusp that did not
-come from a tool call) and Phase 8 (validation, reports, frontend) follow per
-`BUILD_PLAN.md`.
+edition), the knowledge layer (a serializable query API over the codified rules
+plus a scoped RAG retriever), and the tool-calling agent (hand-rolled loop over
+the engine with the never-invent-a-position guardrail). The engine is
+deterministic about facts; the agent only interprets. Phase 8 (regression
+golden suite, interpretation-quality evals, birth-time rectification, and a web
+frontend that renders the chart, dasha timeline, and structured reading)
+follows per `BUILD_PLAN.md`.

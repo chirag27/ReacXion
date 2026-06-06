@@ -8,6 +8,9 @@ pytest>=8.0              # test harness for the golden charts
 # Phase 6 — knowledge layer (RAG)
 chromadb>=1.0            # vector store for interpretive prose
 
+# Phase 7 — the tool-calling agent (live LLM calls only; tests use a fake)
+anthropic>=0.40          # Claude SDK; agent defaults to claude-opus-4-8
+
 # Optional embedding backends (the engine defaults to a built-in hashing
 # embedder, so these are NOT required to run):
 #   pip install "sentence-transformers"   # local BGE embeddings (private, offline)

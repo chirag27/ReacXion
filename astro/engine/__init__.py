@@ -73,6 +73,7 @@ from .lalkitab_debts import Rina, detect_rinas, rina_report
 from .lalkitab_remedies import Remedy, remedies_for
 from . import knowledge  # Phase 6 — codified-rules query API
 from . import rag        # Phase 6 — RAG (embeddings + Chroma + retriever)
+from . import agent      # Phase 7 — tool-calling agent
 
 __all__ = [
     "BirthData",
@@ -160,4 +161,6 @@ __all__ = [
     # Phase 6 — knowledge layer
     "knowledge",
     "rag",
+    # Phase 7 — agent
+    "agent",
 ]
