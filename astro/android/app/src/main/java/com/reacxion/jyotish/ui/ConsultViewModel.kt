@@ -41,7 +41,7 @@ class ConsultViewModel : ViewModel() {
     var error by mutableStateOf<String?>(null)
         private set
 
-    fun setBackendUrl(v: String) { backendUrl = v }
+    fun updateBackendUrl(v: String) { backendUrl = v }
     fun updateForm(f: BirthForm) { form = f }
 
     private fun birthBody() = BirthBody(

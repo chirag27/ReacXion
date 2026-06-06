@@ -41,7 +41,7 @@ fun JyotishApp(vm: ConsultViewModel) {
 @Composable
 private fun BackendField(vm: ConsultViewModel) {
     OutlinedTextField(
-        value = vm.backendUrl, onValueChange = vm::setBackendUrl,
+        value = vm.backendUrl, onValueChange = vm::updateBackendUrl,
         label = { Text("Backend URL") }, singleLine = true,
         supportingText = { Text("Emulator: http://10.0.2.2:8000 · Device: your PC's LAN IP") },
         modifier = Modifier.fillMaxWidth())
